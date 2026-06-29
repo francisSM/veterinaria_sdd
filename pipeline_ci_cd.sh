@@ -26,21 +26,22 @@ fi
 
 echo "=== [3/3] Fase de Simulación de Despliegue AWS Academy (Learner Lab) ==="
 # Despliegue simulado adaptado a LabRole
-PEM_KEY="~/.ssh/labs_key.pem"
-HOST="ec2-54-210-14-88.compute-1.amazonaws.com"
+PEM_KEY="./labsuser.pem"
+HOST="54.210.14.88"
 USER="ubuntu"
 PORT_REMAP=3000
 
 echo "Parámetros del Staging Student Lab:"
-echo "- Instancia Host: $HOST"
+echo "- Instancia Host IP: $HOST"
 echo "- SSH User: $USER"
 echo "- SSH Key PEM: $PEM_KEY"
 echo "- Puerto Remapeado: $PORT_REMAP"
 echo "- Limitación de Acceso: Restringido por políticas de AWS LabRole"
 
 echo "Sincronizando archivos al directorio del host remoto..."
-echo "rsync -avz --exclude 'node_modules' ./ $USER@$HOST:/home/$USER/app/"
+echo "rsync -avz -e \"ssh -i $PEM_KEY -o StrictHostKeyChecking=no\" --exclude 'node_modules' --exclude '.git' ./ $USER@$HOST:/home/$USER/app/"
 echo "Estableciendo túnel y recargando servidor PM2 en caliente..."
-echo "ssh -i $PEM_KEY $USER@$HOST 'pm2 reload AppServerL5 || pm2 start dist/app.js --name AppServerL5'"
+echo "ssh -i $PEM_KEY -o StrictHostKeyChecking=no $USER@$HOST 'cd /home/$USER/app && npm install && npm run build --if-present && pm2 reload AppServerL5 || pm2 start dist/app.js --name AppServerL5'"
 
 echo "=== PIPELINE DE CI/CD EJECUTADO CON ÉXITO EN SANDBOX ==="
+
