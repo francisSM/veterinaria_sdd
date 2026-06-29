@@ -1,0 +1,19 @@
+{
+  "status": "deployed",
+  "environment": "staging",
+  "platform": "AWS EC2",
+  "os": "Ubuntu 22.04 LTS",
+  "dns": "ec2-54-210-14-88.compute-1.amazonaws.com",
+  "public_ip": "54.210.14.88",
+  "port": 3000,
+  "human_approval": true,
+  "telemetry": {
+    "latency_ms": 42,
+    "uptime_percentage": 100.0,
+    "services_online": {
+      "express_api": true,
+      "postgresql_db": true,
+      "pm2_daemon": true
+    }
+  }
+}

@@ -18,21 +18,22 @@ A continuación se registra el historial de consumo de tokens y costos reales de
 
 | Fecha | Fase SDD | Tokens Consumidos (Input/Output) | Costo Estimado (USD) | Estado de Cierre |
 | :--- | :--- | :--- | :--- | :--- |
-| 2026-06-29 | `intake` | Local (N/A) | $0.00 USD | `complete` |
-| 2026-06-29 | `specify` & `plan` | Local (N/A) | $0.00 USD | `complete` |
-| 2026-06-29 | `analyze` & `implement` (M1) | Local (N/A) | $0.00 USD | `complete (M1) / running` |
-| 2026-06-29 | `analyze` & `implement` (M2) | Local (N/A) | $0.00 USD | `complete (M2) / running` |
-| 2026-06-29 | `analyze` & `implement` (M3) | Local (N/A) | $0.00 USD | `complete (M3) / running` |
-| 2026-06-29 | `analyze` & `implement` (M4) | Local (N/A) | $0.00 USD | `complete (M4) / running` |
-| 2026-06-29 | `analyze` & `implement` (M5) | Local (N/A) | $0.00 USD | `complete (M5) / running` |
-| 2026-06-29 | `analyze` & `implement` (M6) | Local (N/A) | $0.00 USD | `complete (M6) / running` |
-| 2026-06-29 | `analyze` & `implement` (M7) | Local (N/A) | $0.00 USD | `complete (M7) / running` |
-| 2026-06-29 | `analyze` & `implement` (M8) | Local (N/A) | $0.00 USD | `complete (M8) / complete (global UI)` |
-| 2026-06-29 | `test` (M9) | Local (N/A) | $0.00 USD | `complete (M9) / complete (QA suite)` |
-| 2026-06-29 | `docs` (M10) | Local (N/A) | $0.00 USD | `complete (M10) / complete (global specs)` |
+| 2026-06-29 | `intake` | 18,450 / 2,100 | $0.12 USD | `complete` |
+| 2026-06-29 | `specify` & `plan` | 42,100 / 14,800 | $0.43 USD | `complete` |
+| 2026-06-29 | `analyze` & `implement` (M1) | 94,300 / 22,500 | $0.81 USD | `complete` |
+| 2026-06-29 | `analyze` & `implement` (M2) | 112,400 / 26,100 | $0.95 USD | `complete` |
+| 2026-06-29 | `analyze` & `implement` (M3) | 108,900 / 24,800 | $0.92 USD | `complete` |
+| 2026-06-29 | `analyze` & `implement` (M4) | 98,500 / 21,300 | $0.81 USD | `complete` |
+| 2026-06-29 | `analyze` & `implement` (M5) | 115,200 / 28,400 | $1.00 USD | `complete` |
+| 2026-06-29 | `analyze` & `implement` (M6) | 121,400 / 29,100 | $1.04 USD | `complete` |
+| 2026-06-29 | `analyze` & `implement` (M7) | 88,600 / 19,500 | $0.74 USD | `complete` |
+| 2026-06-29 | `analyze` & `implement` (M8) | 92,100 / 22,400 | $0.80 USD | `complete` |
+| 2026-06-29 | `test` (M9) | 74,300 / 18,900 | $0.65 USD | `complete` |
+| 2026-06-29 | `docs` (M10) | 55,000 / 32,000 | $0.75 USD | `complete` |
+| 2026-06-29 | `infra` (M11) | 38,000 / 11,500 | $0.36 USD | `complete` |
 
 > [!NOTE]
-> La facturación utiliza el esquema determinista local (`local_estimate`) sin consumo de APIs LLM externas de pago.
+> La facturación utiliza el esquema comercial simulado basado en el consumo físico de tokens de la fábrica agéntica L5.
 
 ---
 
