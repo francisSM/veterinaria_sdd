@@ -22,6 +22,12 @@ Thumbs.db
 guion_presentacion.md
 informe_justificacion.md
 presentacion_defensa.pptx
+checklist_completitud.md
+
+# Llaves y Credenciales
+*.pem
+aws_credentials.txt
+.env.production
 
 # Archivos de Video, Audio e Imágenes Crudas
 *.mp4
@@ -34,3 +40,4 @@ presentacion_defensa.pptx
 *.flac
 *.webp
 *.gif
+
