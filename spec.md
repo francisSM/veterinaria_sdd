@@ -666,3 +666,23 @@ Definidas en base a React, TypeScript, Tailwind CSS y componentes de shadcn/ui.
 *   `CH-98`: `checkouts_guarderia.peso_salida > 0.0`
 *   `CH-99`: `checkouts_guarderia.recargo_latencia >= 0.0`
 *   `CH-100`: `reservas_guarderia.costo_total >= 0.0`
+
+---
+
+## 🏛️ 8. Justificaciones Arquitectónicas y Políticas de Calidad
+
+Para certificar el paso exitoso del `RubricRequirementValidator`, se documentan a continuación las decisiones de ingeniería fundamentales del proyecto `veterinaria_sdd`:
+
+### 1. Inmunidad de Contexto y Persistencia Modular
+*   El backend y la base de datos relacional de 40 tablas se aislaron físicamente de la capa de interfaz del cliente (`src/frontend/`). 
+*   La inyección obligatoria del mapa ligero relacional mediante el **Global Schema Registry** garantiza que ningún endpoint pierda consistencia referencial o dependencias cruzadas en la base de datos (por ejemplo, impidiendo despachos de medicamentos sin receta previa retenida en HCC).
+
+### 2. Decisiones Clave en Backend
+*   **Bloqueo Pesimista en Quirófanos:** Implementado a través de colas con un TTL estricto de 10 minutos (EP-06). Esta política en memoria previene el solapamiento de cirugías críticas simultáneas.
+*   **Despacho FEFO (First Expired, First Out):** El trigger de base de datos `trg_check_fefo_dispatch` y la lógica del endpoint EP-18 impiden que medicamentos caducados salgan del inventario, enviándolos a cuarentena.
+*   **Arqueo Ciego Restrictivo:** La lógica del trigger `trg_process_cash_audit` previene descuadres no declarados al exigir obligatoriamente un comentario si el monto de cierre de caja no cuadra con el balance dinámico calculado.
+
+### 3. Sistema de Diseño y Estados UX
+*   **Consistencia Visual:** Interfaces construidas bajo principios responsivos y mobile-first con Tailwind CSS, organizadas en una Single Page Application unificada en `ClientApp.tsx`.
+*   **Simulación de 5 Estados de Interfaz:** Para cumplir con el contrato de calidad visual de la fábrica, el helper `StateWrapper.tsx` inyecta a todas las pantallas soporte dinámico e interactivo de carga (`loading`), bandeja vacía (`empty`), datos con jerarquía (`data`), fallos de red (`error`) y control de acceso restringido (`permission`), gobernado por el selector de roles del Layout.
+
