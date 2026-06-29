@@ -6,7 +6,7 @@ Este archivo actúa como la bitácora histórica y el registro de gobernanza par
 
 ## 📍 Estado y Fase del Proyecto
 
-*   **Fase Actual:** `analyze` & `implement` / Implementación de Módulo 1 (HCC y Persistencia).
+*   **Fase Actual:** `analyze` & `implement` / Implementación de Módulo 2 (ILM) y Módulo 3 (FAP).
 *   **Estado de Salud de la Fábrica:** Nivel de madurez verificado **L5** (Checklist de auditoría `approved`).
 *   **Tests de Arnés:** `23 tests OK` (100% de pasaje en unittest).
 
@@ -21,6 +21,8 @@ A continuación se registra el historial de consumo de tokens y costos reales de
 | 2026-06-29 | `intake` | Local (N/A) | $0.00 USD | `complete` |
 | 2026-06-29 | `specify` & `plan` | Local (N/A) | $0.00 USD | `complete` |
 | 2026-06-29 | `analyze` & `implement` (M1) | Local (N/A) | $0.00 USD | `complete (M1) / running` |
+| 2026-06-29 | `analyze` & `implement` (M2) | Local (N/A) | $0.00 USD | `complete (M2) / running` |
+| 2026-06-29 | `analyze` & `implement` (M3) | Local (N/A) | $0.00 USD | `complete (M3) / running` |
 
 > [!NOTE]
 > La facturación utiliza el esquema determinista local (`local_estimate`) sin consumo de APIs LLM externas de pago.
@@ -33,9 +35,12 @@ Para garantizar la continuidad operativa en un nuevo hilo o por parte de otro ag
 
 1.  **Optimización e Infraestructura:** Las mejoras arquitectónicas (GSR, AWS EC2 Bridge, Validación Modular y RubricRequirementValidator) están activas. Detalles en [.fabrica/docs/MEJORAS_FABRICA.md](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/.fabrica/docs/MEJORAS_FABRICA.md).
 2.  **Especificación:** El archivo [spec.md](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/spec.md) define las 40 tablas, 40 endpoints, 60 reglas de negocio, 100 validaciones check, 30 flujos y 10 casos de uso.
-3.  **Código del Módulo 1 Creado:**
-    *   **SQL DDL:** [001_create_hcc_tables.sql](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/database/migrations/001_create_hcc_tables.sql) con la definición de las primeras 10 tablas clínicas de HCC y sus restricciones CHECK (CH-01 a CH-25).
-    *   **Backend Models:** [hcc.ts](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/src/models/hcc.ts) que contiene las interfaces TypeScript mapeadas 1-to-1 con las tablas relacionales y el metadato del Global Schema Registry.
-4.  **Próximo Paso Inmediato:** Proceder a la implementación física del Módulo 2 (Inventario de Medicamentos) o a la generación de pruebas locales del Módulo 1 en sandbox según directivas del usuario.
+3.  **Código e Infraestructura Implementados:**
+    *   **Módulo 1 (HCC):** DDL en [001_create_hcc_tables.sql](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/database/migrations/001_create_hcc_tables.sql) y modelos en [hcc.ts](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/src/models/hcc.ts).
+    *   **Módulo 2 (ILM):** DDL en [002_create_ilm_tables.sql](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/database/migrations/002_create_ilm_tables.sql) y modelos en [ilm.ts](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/src/models/ilm.ts). Incluye la lógica FEFO y triggers de vencimiento.
+    *   **Módulo 3 (FAP):** DDL en [003_create_fap_tables.sql](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/database/migrations/003_create_fap_tables.sql) y modelos en [fap.ts](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/src/models/fap.ts). Incluye triggers de arqueos ciegos y autocalculo de diferencias.
+4.  **Control de Versiones Git:** Repositorio local inicializado en `project/veterinaria_sdd/`. El historial de commits registra las fases de diseño y de persistencia modular.
+5.  **Próximo Paso Inmediato:** Proceder a la implementación física del Módulo 4 (Guardería y Peluquería) para completar la totalidad del esquema y las cuotas de rúbrica.
+
 
 
