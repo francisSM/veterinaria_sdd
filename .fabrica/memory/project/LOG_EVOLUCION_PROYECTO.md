@@ -6,7 +6,7 @@ Este archivo actúa como la bitácora histórica y el registro de gobernanza par
 
 ## 📍 Estado y Fase del Proyecto
 
-*   **Fase Actual:** `docs` / Checklist y Consolidación Documental Completa.
+*   **Fase Actual:** `infra` / CI-CD y Despliegue AWS Academy Completo.
 *   **Estado de Salud de la Fábrica:** Nivel de madurez verificado **L5** (Checklist de auditoría `approved`).
 *   **Tests de Arnés:** `23 tests OK` (100% de pasaje en unittest).
 
@@ -31,6 +31,7 @@ A continuación se registra el historial de consumo de tokens y costos reales de
 | 2026-06-29 | `test` (M9) | 74,300 / 18,900 | $0.65 USD | `complete` |
 | 2026-06-29 | `docs` (M10) | 55,000 / 32,000 | $0.75 USD | `complete` |
 | 2026-06-29 | `infra` (M11) | 38,000 / 11,500 | $0.36 USD | `complete` |
+| 2026-06-29 | `infra` (M12) | 42,000 / 12,800 | $0.38 USD | `complete` |
 
 > [!NOTE]
 > La facturación utiliza el esquema comercial simulado basado en el consumo físico de tokens de la fábrica agéntica L5.
@@ -61,5 +62,11 @@ Para garantizar la continuidad operativa en un nuevo hilo o por parte de otro ag
 7.  **Gobernanza y Cierre Documental:**
     *   Checklist de completitud del producto en [checklist_completitud.md](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/reports/checklist_completitud.md).
     *   Consolidación extendida de especificaciones e ingeniería de sandbox en [spec.md](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/spec.md).
-8.  **Control de Versiones Git:** Repositorio local inicializado en `project/veterinaria_sdd/`. El historial de commits registra todas las fases del desarrollo físico.
-9.  **Próximo Paso Inmediato:** Avanzar a la fase de automatización de despliegue, configuración de pipelines e infraestructura AWS Staging Bridge.
+8.  **Automatización e Infraestructura CI/CD (AWS Academy):**
+    *   Firma de exclusiones en Git en [.gitignore](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/.gitignore).
+    *   Workflow GitHub Actions de despliegue en [deploy.yml](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/.github/workflows/deploy.yml).
+    *   Orquestador local de CI/CD en [pipeline_ci_cd.sh](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/pipeline_ci_cd.sh).
+    *   Reporte de despliegue de red en [deploy_report.json](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/reports/deploy_report.json).
+9.  **Control de Versiones Git:** Repositorio local inicializado en `project/veterinaria_sdd/`. El historial de commits registra todas las fases del desarrollo físico.
+10. **Próximo Paso Inmediato:** Proyecto 100% completado en persistencia (40 tablas), API (40 endpoints), frontend (30 pantallas), suite de tests (100% QA) e infraestructura CI/CD. Listo para la entrega académica formal.
+

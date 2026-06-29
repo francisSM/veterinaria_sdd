@@ -1,0 +1,36 @@
+# ==============================================================================
+# GITIGNORE - EXCLUSIONES DE CONTROL DE VERSIONES (veterinaria_sdd)
+# ==============================================================================
+
+# Dependencias e Compilados
+node_modules/
+dist/
+build/
+.env
+.env.production
+
+# Archivos de Sistema Operativo y Editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
+
+# ==============================================================================
+# RESTRICCIÓN DE CALIDAD: MATERIAL DE DEFENSA ACADÉMICA Y MULTIMEDIA
+# ==============================================================================
+guion_presentacion.md
+informe_justificacion.md
+presentacion_defensa.pptx
+
+# Archivos de Video, Audio e Imágenes Crudas
+*.mp4
+*.mov
+*.webm
+*.avi
+*.mkv
+*.mp3
+*.wav
+*.flac
+*.webp
+*.gif

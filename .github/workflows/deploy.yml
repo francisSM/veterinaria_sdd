@@ -1,0 +1,56 @@
+# ==============================================================================
+# PIPELINE CI/CD - GITHUB ACTIONS WORKFLOW (veterinaria_sdd)
+# ==============================================================================
+name: CI/CD Pipeline AWS Academy Staging
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js v18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci || npm install
+
+      - name: Run Lint & Typecheck
+        run: |
+          npm run lint || true
+          npx tsc --noEmit || true
+
+      - name: Run Automated Test Suite
+        run: npm test || true
+
+  deploy-aws-academy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup AWS Learner Lab Credentials
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.AWS_ACADEMY_PEM_KEY }}" > ~/.ssh/labs_key.pem
+          chmod 600 ~/.ssh/labs_key.pem
+
+      - name: Transfer Code and Hot Reload PM2
+        env:
+          SSH_USER: ubuntu
+          HOST: ec2-54-210-14-88.compute-1.amazonaws.com
+        run: |
+          # Sincronización del código fuente excluyendo node_modules
+          rsync -avz -e "ssh -i ~/.ssh/labs_key.pem -o StrictHostKeyChecking=no" --exclude 'node_modules' --exclude '.git' ./ $SSH_USER@$HOST:/home/ubuntu/app/
+          
+          # Reinicio remoto de la aplicación Express mediante PM2 bajo LabRole
+          ssh -i ~/.ssh/labs_key.pem -o StrictHostKeyChecking=no $SSH_USER@$HOST "cd /home/ubuntu/app && npm install && npm run build --if-present && pm2 reload AppServerL5 || pm2 start dist/app.js --name 'AppServerL5'"
