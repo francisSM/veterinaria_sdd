@@ -6,7 +6,7 @@ Este archivo actúa como la bitácora histórica y el registro de gobernanza par
 
 ## 📍 Estado y Fase del Proyecto
 
-*   **Fase Actual:** `analyze` & `implement` / Andamiaje Frontend y SCR-01 a SCR-15.
+*   **Fase Actual:** `analyze` & `implement` / Capa Frontend Completa (SCR-01 a SCR-30).
 *   **Estado de Salud de la Fábrica:** Nivel de madurez verificado **L5** (Checklist de auditoría `approved`).
 *   **Tests de Arnés:** `23 tests OK` (100% de pasaje en unittest).
 
@@ -27,6 +27,7 @@ A continuación se registra el historial de consumo de tokens y costos reales de
 | 2026-06-29 | `analyze` & `implement` (M5) | Local (N/A) | $0.00 USD | `complete (M5) / running` |
 | 2026-06-29 | `analyze` & `implement` (M6) | Local (N/A) | $0.00 USD | `complete (M6) / running` |
 | 2026-06-29 | `analyze` & `implement` (M7) | Local (N/A) | $0.00 USD | `complete (M7) / running` |
+| 2026-06-29 | `analyze` & `implement` (M8) | Local (N/A) | $0.00 USD | `complete (M8) / complete (global UI)` |
 
 > [!NOTE]
 > La facturación utiliza el esquema determinista local (`local_estimate`) sin consumo de APIs LLM externas de pago.
@@ -45,10 +46,13 @@ Para garantizar la continuidad operativa en un nuevo hilo o por parte de otro ag
     *   **Módulo 3 (FAP):** DDL en [003_create_fap_tables.sql](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/database/migrations/003_create_fap_tables.sql) y modelos en [fap.ts](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/src/models/fap.ts). Incluye triggers de arqueos ciegos y autocalculo de diferencias.
     *   **Módulo 4 (GAP):** DDL en [004_create_gap_tables.sql](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/database/migrations/004_create_gap_tables.sql) y modelos en [gap.ts](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/src/models/gap.ts). Cierra las 40 tablas y los 100 CHECKs.
 4.  **Capa del Servidor y API (40 Endpoints):** Servidor central en `app.ts` y rutas unificadas en `routes/api.ts` vinculando los controladores `hcc`, `ilm`, `fap` y `gap`.
-5.  **Andamiaje Frontend y SCR-01 a SCR-15:**
+5.  **Andamiaje Frontend y SCR-01 a SCR-30 (100% UI):**
     *   Layout principal en [Layout.tsx](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/src/frontend/Layout.tsx) y unificador [ClientApp.tsx](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/src/frontend/ClientApp.tsx).
     *   Módulo clínico (SCR-01 a SCR-08) en `src/frontend/hcc/` con triajes, quirófanos y consentimiento firmado.
-    *   Módulo inventario (SCR-09 a SCR-15) en `src/frontend/ilm/` con catálogos, ingresos, alertas FEFO y auditorías.
+    *   Módulo inventario (SCR-09 a SCR-15) en `src/frontend/ilm/` con catálogos, alertas FEFO y auditorías.
+    *   Módulo financiero (SCR-16 a SCR-23) en `src/frontend/fap/` con arqueo ciego, terminal POS e historial.
+    *   Módulo guardería/estética (SCR-24 a SCR-30) en `src/frontend/gap/` con mapas de caniles, checklists y alimentación.
     *   Todos los componentes integran la visualización interactiva de los 5 estados de UX mediante el helper [StateWrapper.tsx](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/src/frontend/StateWrapper.tsx).
 6.  **Control de Versiones Git:** Repositorio local inicializado en `project/veterinaria_sdd/`. El historial de commits registra todas las fases del desarrollo físico.
-7.  **Próximo Paso Inmediato:** Continuar con el Ciclo 8 para codificar las pantallas de la SCR-16 a la SCR-30 correspondientes a los módulos de Facturación (FAP) y Guardería/Peluquería (GAP).
+7.  **Próximo Paso Inmediato:** Avanzar hacia la fase de CI/CD Sandbox y AWS Bridge (Fase de Despliegue de Infraestructura).
+

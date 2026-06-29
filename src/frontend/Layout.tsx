@@ -29,6 +29,21 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTa
     { id: 'movimientos', label: '🔄 Ajustes Manuales', roleRequired: ['administrador', 'farmaceutico'] },
     { id: 'proveedores', label: '🤝 Proveedores', roleRequired: ['administrador', 'farmaceutico'] },
     { id: 'auditoria', label: '🔍 Auditoría Stock', roleRequired: ['administrador', 'farmaceutico'] },
+    { id: 'apertura-cierre', label: '🔑 Apertura/Cierre Caja', roleRequired: ['administrador', 'cajero'] },
+    { id: 'arqueo-cieo', label: '💰 Arqueo Ciego', roleRequired: ['administrador', 'cajero'] },
+    { id: 'punto-venta', label: '🛒 Punto de Venta (POS)', roleRequired: ['administrador', 'cajero'] },
+    { id: 'historial-comprobantes', label: '📄 Historial Facturas', roleRequired: ['administrador', 'cajero'] },
+    { id: 'anulaciones', label: '❌ Notas de Crédito', roleRequired: ['administrador', 'cajero'] },
+    { id: 'seguros', label: '🛡️ Convenios Seguros', roleRequired: ['administrador', 'cajero'] },
+    { id: 'descuentos', label: '🎟️ Campañas Descuentos', roleRequired: ['administrador', 'cajero'] },
+    { id: 'bitacora-financiera', label: '📈 Bitácora Caja', roleRequired: ['administrador'] },
+    { id: 'mapa-caniles', label: '🏨 Aforo Hotel', roleRequired: ['administrador', 'recepcionista', 'veterinario'] },
+    { id: 'admision-guarderia', label: '🐾 Admisión Guardería', roleRequired: ['administrador', 'recepcionista'] },
+    { id: ' checklist-pertenencias', label: '🎒 Custodia Equipaje', roleRequired: ['administrador', 'recepcionista'] },
+    { id: 'dietas', label: '🍲 Dietas Especiales', roleRequired: ['administrador', 'recepcionista', 'veterinario'] },
+    { id: 'bitacora-actividades', label: '📅 Agenda Diaria', roleRequired: ['administrador', 'recepcionista', 'veterinario'] },
+    { id: 'agenda-estetica', label: '✂️ Agenda Estética', roleRequired: ['administrador', 'recepcionista'] },
+    { id: 'gestion-cuidadores', label: '👥 Personal Hotel', roleRequired: ['administrador'] },
   ];
 
   return (
@@ -44,7 +59,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTa
           </div>
 
           {/* Menú de Opciones */}
-          <nav className="p-4 space-y-1">
+          <nav className="p-4 space-y-1 overflow-y-auto max-h-[calc(100vh-160px)]">
             {menuItems.map((item) => {
               const isAllowed = item.roleRequired.includes(currentRole);
               return (
