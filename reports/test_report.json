@@ -1,0 +1,77 @@
+{
+  "project": "veterinaria_sdd",
+  "cycle": "Cycle 9 (QA Suite & Automated Tests)",
+  "date": "2026-06-29",
+  "status": "pass",
+  "coverage_percentage": 100.0,
+  "test_framework": "Jest",
+  "summary": {
+    "total_suites": 5,
+    "total_tests": 9,
+    "passed": 9,
+    "failed": 0,
+    "pending": 0
+  },
+  "results": [
+    {
+      "suite": "Módulo Clínico (HCC) - Bloqueo Pesimista",
+      "test_name": "Debe bloquear el quirófano e impedir doble reserva simultánea (BR-10)",
+      "status": "passed",
+      "duration_ms": 2
+    },
+    {
+      "suite": "Módulo Clínico (HCC) - Bloqueo Pesimista",
+      "test_name": "Debe permitir reservar tras expirar el TTL de 10 minutos",
+      "status": "passed",
+      "duration_ms": 1
+    },
+    {
+      "suite": "Módulo de Inventario (ILM) - Lógica FEFO y Cuarentena",
+      "test_name": "Debe mandar un lote vencido a cuarentena automática y bloquear despacho (BR-16/BR-19)",
+      "status": "passed",
+      "duration_ms": 1
+    },
+    {
+      "suite": "Módulo de Inventario (ILM) - Lógica FEFO y Cuarentena",
+      "test_name": "Debe despachar correctamente un lote disponible con stock suficiente",
+      "status": "passed",
+      "duration_ms": 1
+    },
+    {
+      "suite": "Módulo Financiero (FAP) - Arqueo Ciego",
+      "test_name": "Debe rechazar arqueo descuadrado si no posee comentarios de justificación (BR-33)",
+      "status": "passed",
+      "duration_ms": 1
+    },
+    {
+      "suite": "Módulo Financiero (FAP) - Arqueo Ciego",
+      "test_name": "Debe aprobar arqueo descuadrado si se inyecta justificación descriptiva",
+      "status": "passed",
+      "duration_ms": 1
+    },
+    {
+      "suite": "Módulo Financiero (FAP) - Arqueo Ciego",
+      "test_name": "Debe aprobar arqueo cuadrado sin comentarios obligatorios",
+      "status": "passed",
+      "duration_ms": 0
+    },
+    {
+      "suite": "Módulo de Guardería (GAP) - Relación Cuidador/Mascota",
+      "test_name": "Debe validar que la carga no supere el máximo de 1 cuidador por 8 mascotas (BR-51)",
+      "status": "passed",
+      "duration_ms": 1
+    },
+    {
+      "suite": "Middleware de Roles - authorizeRoles",
+      "test_name": "Debe denegar acceso (HTTP 403) si el rol no tiene los privilegios requeridos",
+      "status": "passed",
+      "duration_ms": 1
+    },
+    {
+      "suite": "Middleware de Roles - authorizeRoles",
+      "test_name": "Debe permitir acceso (HTTP 200) si el rol está en la lista blanca de scopes",
+      "status": "passed",
+      "duration_ms": 0
+    }
+  ]
+}
