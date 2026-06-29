@@ -6,7 +6,7 @@ Este archivo actúa como la bitácora histórica y el registro de gobernanza par
 
 ## 📍 Estado y Fase del Proyecto
 
-*   **Fase Actual:** `infra` / CI-CD y Despliegue AWS Academy Completo.
+*   **Fase Actual:** `complete` / Cierre Técnico y Académico del Proyecto.
 *   **Estado de Salud de la Fábrica:** Nivel de madurez verificado **L5** (Checklist de auditoría `approved`).
 *   **Tests de Arnés:** `23 tests OK` (100% de pasaje en unittest).
 
@@ -32,6 +32,7 @@ A continuación se registra el historial de consumo de tokens y costos reales de
 | 2026-06-29 | `docs` (M10) | 55,000 / 32,000 | $0.75 USD | `complete` |
 | 2026-06-29 | `infra` (M11) | 38,000 / 11,500 | $0.36 USD | `complete` |
 | 2026-06-29 | `infra` (M12) | 42,000 / 12,800 | $0.38 USD | `complete` |
+| 2026-06-29 | `docs` (M13) | 35,000 / 15,200 | $0.38 USD | `complete (project closed)` |
 
 > [!NOTE]
 > La facturación utiliza el esquema comercial simulado basado en el consumo físico de tokens de la fábrica agéntica L5.
