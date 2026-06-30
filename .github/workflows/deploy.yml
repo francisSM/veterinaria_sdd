@@ -50,7 +50,7 @@ jobs:
         run: npm install
 
       - name: Build TypeScript
-        run: npm run build || true
+        run: npm run build
 
       - name: Setup AWS Credentials
         run: |
@@ -118,7 +118,7 @@ jobs:
             -o StrictHostKeyChecking=no \
             -o ConnectTimeout=30 \
             "$SSH_USER@$HOST" \
-            "cd /home/ubuntu/app/veterinaria_sdd && npm run build 2>&1 | tail -15 || echo 'Build skipped'"
+            "cd /home/ubuntu/app/veterinaria_sdd && rm -rf dist && npm run build 2>&1 && echo 'Build OK'"
 
       - name: Run DB Migrations on EC2
         env:
@@ -138,7 +138,7 @@ jobs:
             -o StrictHostKeyChecking=no \
             -o ConnectTimeout=30 \
             "$SSH_USER@$HOST" \
-            "cd /home/ubuntu/app/veterinaria_sdd && pm2 delete AppServerL5 2>/dev/null || true && DB_HOST=localhost DB_PORT=5432 DB_USER=vetapp DB_PASSWORD=produccion_pass_l5 DB_NAME=veterinaria_sdd PORT=3000 NODE_ENV=production pm2 start dist/app.js --name AppServerL5 && pm2 save && pm2 list"
+            "cd /home/ubuntu/app/veterinaria_sdd && pm2 delete AppServerL5 2>/dev/null || true && rm -f /home/ubuntu/.pm2/logs/AppServerL5*.log && DB_HOST=localhost DB_PORT=5432 DB_USER=vetapp DB_PASSWORD=produccion_pass_l5 DB_NAME=veterinaria_sdd PORT=3000 NODE_ENV=production pm2 start dist/app.js --name AppServerL5 && pm2 save && pm2 list"
 
       - name: Verify App is Running on EC2
         env:
