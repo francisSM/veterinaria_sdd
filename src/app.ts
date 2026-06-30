@@ -18,6 +18,11 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
+// Health check público (sin auth) — usado por el pipeline de CI/CD
+app.get('/health', (_req: Request, res: Response) => {
+  res.json({ status: 'ok', ts: new Date().toISOString() });
+});
+
 // Rutas de la API
 app.use('/api/v1', apiRouter);
 
