@@ -35,7 +35,6 @@ jobs:
     needs: build-and-test
     runs-on: ubuntu-latest
     env:
-      HOST: ${{ secrets.EC2_HOST }}
       INSTANCE_ID: ${{ secrets.EC2_INSTANCE_ID }}
       SSH_USER: ubuntu
     steps:
@@ -62,17 +61,33 @@ jobs:
             "${{ secrets.AWS_SESSION_TOKEN }}" > ~/.aws/credentials
           printf '[default]\nregion=us-east-1\noutput=json\n' > ~/.aws/config
 
-      - name: Generate Temp SSH Key via EC2 Instance Connect
+      - name: Get EC2 Public IP Dynamically
+        id: ec2_ip
         run: |
+          CURRENT_IP=$(aws ec2 describe-instances \
+            --instance-ids "$INSTANCE_ID" \
+            --query 'Reservations[0].Instances[0].PublicIpAddress' \
+            --output text \
+            --region us-east-1)
+          echo "EC2 IP actual: $CURRENT_IP"
+          echo "host=$CURRENT_IP" >> $GITHUB_OUTPUT
+
+      - name: Generate Temp SSH Key via EC2 Instance Connect
+        env:
+          HOST: ${{ steps.ec2_ip.outputs.host }}
+        run: |
+          echo "Conectando a $HOST..."
           ssh-keygen -t rsa -b 2048 -f ~/.ssh/ec2_temp -N ""
           aws ec2-instance-connect send-ssh-public-key \
             --instance-id "$INSTANCE_ID" \
             --instance-os-user "$SSH_USER" \
             --ssh-public-key file://$HOME/.ssh/ec2_temp.pub \
             --region us-east-1
-          echo "SSH key sent to instance"
+          echo "SSH key enviada a la instancia"
 
       - name: Sync Code to EC2
+        env:
+          HOST: ${{ steps.ec2_ip.outputs.host }}
         run: |
           rsync -avz \
             -e "ssh -i $HOME/.ssh/ec2_temp -o StrictHostKeyChecking=no -o ConnectTimeout=30" \
@@ -81,9 +96,13 @@ jobs:
             --exclude '*.pem' \
             --exclude 'aws_credentials.txt' \
             --exclude 'set_secrets.*' \
+            --exclude 'verify_deploy.*' \
+            --exclude 'labsuser.*' \
             ./ "$SSH_USER@$HOST:/home/ubuntu/app/veterinaria_sdd/"
 
       - name: Install Deps on EC2
+        env:
+          HOST: ${{ steps.ec2_ip.outputs.host }}
         run: |
           ssh -i "$HOME/.ssh/ec2_temp" \
             -o StrictHostKeyChecking=no \
@@ -92,22 +111,28 @@ jobs:
             "cd /home/ubuntu/app/veterinaria_sdd && npm install 2>&1 | tail -5"
 
       - name: Build on EC2
+        env:
+          HOST: ${{ steps.ec2_ip.outputs.host }}
         run: |
           ssh -i "$HOME/.ssh/ec2_temp" \
             -o StrictHostKeyChecking=no \
             -o ConnectTimeout=30 \
             "$SSH_USER@$HOST" \
-            "cd /home/ubuntu/app/veterinaria_sdd && npm run build 2>&1 | tail -10 || echo 'Build skipped'"
+            "cd /home/ubuntu/app/veterinaria_sdd && npm run build 2>&1 | tail -15 || echo 'Build skipped'"
 
       - name: Run DB Migrations on EC2
+        env:
+          HOST: ${{ steps.ec2_ip.outputs.host }}
         run: |
           ssh -i "$HOME/.ssh/ec2_temp" \
             -o StrictHostKeyChecking=no \
             -o ConnectTimeout=30 \
             "$SSH_USER@$HOST" \
-            "cd /home/ubuntu/app/veterinaria_sdd && export PGPASSWORD=produccion_pass_l5 && psql -h localhost -U vetapp -d veterinaria_sdd -f database/migrations/001_create_hcc_tables.sql 2>/dev/null || true && psql -h localhost -U vetapp -d veterinaria_sdd -f database/migrations/002_create_ilm_tables.sql 2>/dev/null || true && psql -h localhost -U vetapp -d veterinaria_sdd -f database/migrations/003_create_fap_tables.sql 2>/dev/null || true && psql -h localhost -U vetapp -d veterinaria_sdd -f database/migrations/004_create_gap_tables.sql 2>/dev/null || true && echo 'Migrations done'"
+            "cd /home/ubuntu/app/veterinaria_sdd && export PGPASSWORD=produccion_pass_l5 && for f in database/migrations/*.sql; do psql -h localhost -U vetapp -d veterinaria_sdd -f \"\$f\" 2>/dev/null || true; done && echo 'Migrations done'"
 
       - name: Start App with PM2 on EC2
+        env:
+          HOST: ${{ steps.ec2_ip.outputs.host }}
         run: |
           ssh -i "$HOME/.ssh/ec2_temp" \
             -o StrictHostKeyChecking=no \
@@ -115,11 +140,13 @@ jobs:
             "$SSH_USER@$HOST" \
             "cd /home/ubuntu/app/veterinaria_sdd && pm2 delete AppServerL5 2>/dev/null || true && DB_HOST=localhost DB_PORT=5432 DB_USER=vetapp DB_PASSWORD=produccion_pass_l5 DB_NAME=veterinaria_sdd PORT=3000 NODE_ENV=production pm2 start dist/app.js --name AppServerL5 && pm2 save && pm2 list"
 
-      - name: Verify PM2 Logs on EC2
+      - name: Verify App is Running on EC2
+        env:
+          HOST: ${{ steps.ec2_ip.outputs.host }}
         run: |
+          sleep 5
           ssh -i "$HOME/.ssh/ec2_temp" \
             -o StrictHostKeyChecking=no \
             -o ConnectTimeout=30 \
             "$SSH_USER@$HOST" \
-            "sleep 5 && pm2 status AppServerL5 && echo '=== ERROR LOGS ===' && cat /home/ubuntu/.pm2/logs/AppServerL5-out.log || true && cat /home/ubuntu/.pm2/logs/AppServerL5-error.log || true"
-
+            "pm2 list && echo '=== OUT LOG ===' && tail -30 /home/ubuntu/.pm2/logs/AppServerL5-out.log 2>/dev/null || true && echo '=== ERR LOG ===' && tail -30 /home/ubuntu/.pm2/logs/AppServerL5-error.log 2>/dev/null || true && echo '=== CURL TEST ===' && curl -sf http://localhost:3000/api/v1/hcc/propietarios && echo 'API OK' || echo 'API no responde aun'"
