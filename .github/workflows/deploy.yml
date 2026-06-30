@@ -114,3 +114,12 @@ jobs:
             -o ConnectTimeout=30 \
             "$SSH_USER@$HOST" \
             "cd /home/ubuntu/app/veterinaria_sdd && pm2 delete AppServerL5 2>/dev/null || true && DB_HOST=localhost DB_PORT=5432 DB_USER=vetapp DB_PASSWORD=produccion_pass_l5 DB_NAME=veterinaria_sdd PORT=3000 NODE_ENV=production pm2 start dist/app.js --name AppServerL5 && pm2 save && pm2 list"
+
+      - name: Verify PM2 Logs on EC2
+        run: |
+          ssh -i "$HOME/.ssh/ec2_temp" \
+            -o StrictHostKeyChecking=no \
+            -o ConnectTimeout=30 \
+            "$SSH_USER@$HOST" \
+            "sleep 5 && pm2 status AppServerL5 && echo '=== ERROR LOGS ===' && cat /home/ubuntu/.pm2/logs/AppServerL5-out.log || true && cat /home/ubuntu/.pm2/logs/AppServerL5-error.log || true"
+
