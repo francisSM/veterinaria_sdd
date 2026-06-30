@@ -284,7 +284,7 @@ export const crearCirugia = async (req: AuthenticatedRequest, res: Response) => 
     });
 
     const nuevo: Cirugia = {
-      id: cirigiasDB.length + 1,
+      id: cirugiasDB.length + 1,
       consultaId,
       veterinarioId,
       tipoCirugia,
@@ -292,7 +292,7 @@ export const crearCirugia = async (req: AuthenticatedRequest, res: Response) => 
       costoAdicional,
       fechaCirugia: new Date(bloqueHorario)
     };
-    cirigiasDB.push(nuevo);
+    cirugiasDB.push(nuevo);
 
     return res.status(201).json({
       cirugia: nuevo,
