@@ -34,6 +34,10 @@ jobs:
   deploy-aws-academy:
     needs: build-and-test
     runs-on: ubuntu-latest
+    env:
+      HOST: ${{ secrets.EC2_HOST }}
+      INSTANCE_ID: ${{ secrets.EC2_INSTANCE_ID }}
+      SSH_USER: ubuntu
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -49,76 +53,64 @@ jobs:
       - name: Build TypeScript
         run: npm run build || true
 
-      - name: Setup SSH Key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.AWS_ACADEMY_PEM_KEY }}" > ~/.ssh/labs_key.pem
-          chmod 600 ~/.ssh/labs_key.pem
-
-      - name: Configure AWS Credentials
+      - name: Setup AWS Credentials
         run: |
           mkdir -p ~/.aws
-          cat <<EOF > ~/.aws/credentials
-          [default]
-          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws_session_token=${{ secrets.AWS_SESSION_TOKEN }}
-          EOF
-          cat <<EOF > ~/.aws/config
-          [default]
-          region=us-east-1
-          output=json
-          EOF
+          printf '[default]\naws_access_key_id=%s\naws_secret_access_key=%s\naws_session_token=%s\n' \
+            "${{ secrets.AWS_ACCESS_KEY_ID }}" \
+            "${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
+            "${{ secrets.AWS_SESSION_TOKEN }}" > ~/.aws/credentials
+          printf '[default]\nregion=us-east-1\noutput=json\n' > ~/.aws/config
 
-      - name: Send SSH Public Key via EC2 Instance Connect
-        env:
-          INSTANCE_ID: ${{ secrets.EC2_INSTANCE_ID }}
+      - name: Generate Temp SSH Key via EC2 Instance Connect
         run: |
-          # Generar llave temporal para EC2 Instance Connect
-          ssh-keygen -t rsa -f ~/.ssh/ec2_temp_key -N ""
+          ssh-keygen -t rsa -b 2048 -f ~/.ssh/ec2_temp -N ""
           aws ec2-instance-connect send-ssh-public-key \
-            --instance-id $INSTANCE_ID \
-            --instance-os-user ubuntu \
-            --ssh-public-key file://~/.ssh/ec2_temp_key.pub \
-            --region us-east-1 || echo "EC2 Instance Connect failed, trying PEM key"
+            --instance-id "$INSTANCE_ID" \
+            --instance-os-user "$SSH_USER" \
+            --ssh-public-key file://$HOME/.ssh/ec2_temp.pub \
+            --region us-east-1
+          echo "SSH key sent to instance"
 
-      - name: Transfer Code and Deploy via SSH
-        env:
-          SSH_USER: ubuntu
-          HOST: ${{ secrets.EC2_HOST }}
-          INSTANCE_ID: ${{ secrets.EC2_INSTANCE_ID }}
+      - name: Sync Code to EC2
         run: |
-          # Intentar con la clave generada por EC2 Instance Connect
-          SSH_KEY=~/.ssh/ec2_temp_key
-          # Si falla, usar la PEM key tradicional
-          if [ -f ~/.ssh/labs_key.pem ] && [ -s ~/.ssh/labs_key.pem ]; then
-            SSH_KEY=~/.ssh/labs_key.pem
-          fi
-
-          # Sincronización del código fuente excluyendo node_modules
-          rsync -avz -e "ssh -i $SSH_KEY -o StrictHostKeyChecking=no" \
+          rsync -avz \
+            -e "ssh -i $HOME/.ssh/ec2_temp -o StrictHostKeyChecking=no -o ConnectTimeout=30" \
             --exclude 'node_modules' \
             --exclude '.git' \
             --exclude '*.pem' \
             --exclude 'aws_credentials.txt' \
-            ./ $SSH_USER@$HOST:/home/ubuntu/app/veterinaria_sdd/
+            --exclude 'set_secrets.*' \
+            ./ "$SSH_USER@$HOST:/home/ubuntu/app/veterinaria_sdd/"
 
-          # Instalar dependencias y reiniciar servidor
-          ssh -i $SSH_KEY -o StrictHostKeyChecking=no $SSH_USER@$HOST << 'ENDSSH'
-            cd /home/ubuntu/app/veterinaria_sdd
-            npm install
-            npm run build || true
-            # Ejecutar migraciones SQL
-            export PGPASSWORD=produccion_pass_l5
-            psql -h localhost -U vetapp -d veterinaria_sdd -f database/migrations/001_create_hcc_tables.sql 2>/dev/null || true
-            psql -h localhost -U vetapp -d veterinaria_sdd -f database/migrations/002_create_ilm_tables.sql 2>/dev/null || true
-            psql -h localhost -U vetapp -d veterinaria_sdd -f database/migrations/003_create_fap_tables.sql 2>/dev/null || true
-            psql -h localhost -U vetapp -d veterinaria_sdd -f database/migrations/004_create_gap_tables.sql 2>/dev/null || true
-            # Reinicio con PM2
-            pm2 delete AppServerL5 2>/dev/null || true
-            DB_HOST=localhost DB_PORT=5432 DB_USER=vetapp DB_PASSWORD=produccion_pass_l5 \
-              DB_NAME=veterinaria_sdd PORT=3000 NODE_ENV=production \
-              pm2 start dist/app.js --name AppServerL5
-            pm2 save
-            pm2 list
-ENDSSH
+      - name: Install Deps on EC2
+        run: |
+          ssh -i "$HOME/.ssh/ec2_temp" \
+            -o StrictHostKeyChecking=no \
+            -o ConnectTimeout=30 \
+            "$SSH_USER@$HOST" \
+            "cd /home/ubuntu/app/veterinaria_sdd && npm install 2>&1 | tail -5"
+
+      - name: Build on EC2
+        run: |
+          ssh -i "$HOME/.ssh/ec2_temp" \
+            -o StrictHostKeyChecking=no \
+            -o ConnectTimeout=30 \
+            "$SSH_USER@$HOST" \
+            "cd /home/ubuntu/app/veterinaria_sdd && npm run build 2>&1 | tail -10 || echo 'Build skipped'"
+
+      - name: Run DB Migrations on EC2
+        run: |
+          ssh -i "$HOME/.ssh/ec2_temp" \
+            -o StrictHostKeyChecking=no \
+            -o ConnectTimeout=30 \
+            "$SSH_USER@$HOST" \
+            "cd /home/ubuntu/app/veterinaria_sdd && export PGPASSWORD=produccion_pass_l5 && psql -h localhost -U vetapp -d veterinaria_sdd -f database/migrations/001_create_hcc_tables.sql 2>/dev/null || true && psql -h localhost -U vetapp -d veterinaria_sdd -f database/migrations/002_create_ilm_tables.sql 2>/dev/null || true && psql -h localhost -U vetapp -d veterinaria_sdd -f database/migrations/003_create_fap_tables.sql 2>/dev/null || true && psql -h localhost -U vetapp -d veterinaria_sdd -f database/migrations/004_create_gap_tables.sql 2>/dev/null || true && echo 'Migrations done'"
+
+      - name: Start App with PM2 on EC2
+        run: |
+          ssh -i "$HOME/.ssh/ec2_temp" \
+            -o StrictHostKeyChecking=no \
+            -o ConnectTimeout=30 \
+            "$SSH_USER@$HOST" \
+            "cd /home/ubuntu/app/veterinaria_sdd && pm2 delete AppServerL5 2>/dev/null || true && DB_HOST=localhost DB_PORT=5432 DB_USER=vetapp DB_PASSWORD=produccion_pass_l5 DB_NAME=veterinaria_sdd PORT=3000 NODE_ENV=production pm2 start dist/app.js --name AppServerL5 && pm2 save && pm2 list"
