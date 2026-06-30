@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { authenticateToken, authorizeRoles } from '../app';
+import { authenticateToken, authorizeRoles } from '../middleware/auth';
+
 import {
   crearPropietario,
   crearPaciente,
