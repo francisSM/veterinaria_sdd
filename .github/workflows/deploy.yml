@@ -149,4 +149,4 @@ jobs:
             -o StrictHostKeyChecking=no \
             -o ConnectTimeout=30 \
             "$SSH_USER@$HOST" \
-            "pm2 list && echo '=== OUT LOG ===' && tail -30 /home/ubuntu/.pm2/logs/AppServerL5-out.log 2>/dev/null || true && echo '=== ERR LOG ===' && tail -30 /home/ubuntu/.pm2/logs/AppServerL5-error.log 2>/dev/null || true && echo '=== CURL TEST ===' && curl -sf http://localhost:3000/api/v1/hcc/propietarios && echo 'API OK' || echo 'API no responde aun'"
+            "pm2 list && echo '=== OUT LOG ===' && tail -30 /home/ubuntu/.pm2/logs/AppServerL5-out.log 2>/dev/null || true && echo '=== ERR LOG ===' && tail -30 /home/ubuntu/.pm2/logs/AppServerL5-error.log 2>/dev/null || true && echo '=== CURL TEST ===' && curl -sf -H 'Authorization: Bearer token-vet' http://localhost:3000/api/v1/hcc/veterinarios && echo 'API OK' || echo 'API no responde aun'"

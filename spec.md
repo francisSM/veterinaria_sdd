@@ -208,6 +208,39 @@ graph LR
 
 ---
 
+
+## 3c. Funcionalidades y sus Flujos de Trabajo
+
+A continuacion se detallan los cuatro flujos de trabajo criticos del sistema, describiendo paso a paso la secuencia de eventos, actores y reglas aplicadas:
+
+### Flujo de Trabajo 1: Gestion Clinica Critica (HCC)
+Este flujo orquesta la atencion de un paciente que ingresa por emergencias hasta su resolucion quirurgica o de hospitalizacion:
+1.  **Ingreso y Triaje:** El recepcionista registra al propietario (de no existir) y al paciente. Inmediatamente el veterinario realiza el triaje en el endpoint `POST /hcc/triajes`, ingresando constantes como temperatura y frecuencia. El sistema aplica la regla `BR-02` y categoriza automaticamente la gravedad.
+2.  **Consulta de Emergencia:** Si el nivel es "Critico", el paciente salta al tope de la cola de atencion. El veterinario ingresa los datos de la consulta clinica (`POST /hcc/consultas`).
+3.  **Resolucion Clinica:**
+    *   **Caso Quirurgico:** Si se requiere cirugia, el cirujano agenda el pabellon (`POST /hcc/cirugias`). El sistema bloquea en memoria el quirofano por 10 minutos (bloqueo pesimista TTL). Se exige el registro del consentimiento firmado (`POST /hcc/cirugias/{id}/consentimiento`) antes de iniciar.
+    *   **Caso Hospitalizacion:** Si requiere monitoreo, el paciente es ingresado a sala (`POST /hcc/hospitalizaciones`), registrando su peso e ingreso. Cada 4 horas se inyectan signos vitales (`POST /hcc/hospitalizaciones/{id}/signos`). Al finalizar, se emite el alta (`POST /hcc/hospitalizaciones/{id}/alta`) liberando el aforo de la sala de inmediato.
+
+### Flujo de Trabajo 2: Cadena de Suministros y Algoritmo FEFO (ILM)
+Este flujo asegura que los medicamentos de la clinica esten vigentes, controlados y que su despacho reduzca mermas:
+1.  **Recepcion de Mercaderia:** Al comprar a distribuidores (`POST /ilm/compras`), se ingresan lotes con codigo de lote y fecha de vencimiento. El backend ejecuta un trigger que compara la fecha de vencimiento contra el dia actual. Si esta expirado, cambia su estado a "cuarentena" y restringe su salida.
+2.  **Monitoreo y Alertas:** El sistema corre un proceso continuo que evalua el stock disponible de cada farmaco. Si el stock cae por debajo de `stock_minimo`, inserta un registro en la tabla `alertas_stock` con tipo `stock_critico`.
+3.  **Prescripcion y Despacho:** Para medicamentos controlados, el veterinario emite una receta digital (`POST /ilm/recetas`). El farmaceutico realiza el despacho fisico (`POST /ilm/despachos`). El sistema selecciona automaticamente las unidades a descontar del lote mas proximo a vencer (algoritmo FEFO, First Expired, First Out), disminuyendo el inventario en caliente.
+
+### Flujo de Trabajo 3: Ciclo de Caja y Auditoria Financiera (FAP)
+Este flujo gobierna el control monetario de la veterinaria para evitar fraudes y descuadres:
+1.  **Apertura de Caja:** Al inicio del turno, el cajero abre la caja ingresando el cajero responsable y el fondo sencillo inicial (`POST /fap/cajas/abrir`). El sistema valida que el cajero no posea otra caja abierta.
+2.  **Facturacion POS:** Por cada atencion o medicamento vendido, el cajero emite un comprobante (`POST /fap/boletas`), desglosando de manera automatica el 19% de IVA. El cliente puede pagar utilizando multiples medios de pago en simultaneo (`POST /fap/boletas/{id}/pagar`).
+3.  **Cierre y Arqueo Ciego:** Al finalizar el turno, el cajero realiza el arqueo ciego ingresando el monto contado fisicamente (`POST /fap/cajas/cerrar`). El backend calcula de manera oculta la diferencia contra el dinero registrado en sistema. Si existe descuadre, el cajero debe justificarlo obligatoriamente en un comentario de arqueo para poder procesar el cierre. Las diferencias se reportan al supervisor para su aprobacion.
+
+### Flujo de Trabajo 4: Estadisticas de Aforo de Hotel y Agenda de Grooming (GAP)
+Este flujo controla la capacidad de hospedaje de mascotas y los turnos de estilismo:
+1.  **Check-in en Guarderia:** El propietario solicita una reserva (`POST /gap/reservas`) especificando fechas y sala. El sistema valida la capacidad maxima disponible de la sala. Al llegar, se ejecuta el check-in (`POST /gap/checkins`), validando que la mascota tenga vacunas de rabia y distemper vigentes. Se pesa al animal y se detalla el checklist de pertenencias en custodia.
+2.  **Bitacora de Actividades:** Durante la estadia, el cuidador registra la bitacora de comidas, paseos e incidentes. El sistema verifica que la carga de trabajo no exceda de 8 mascotas asignadas por cuidador activo.
+3.  **Peluqueria y Grooming:** Se solicita un turno para estilismo (`POST /gap/citas-peluqueria`), indicando estilista, servicio y fecha. La tarifa se calcula dinamicamente segun la especie y tamano del animal. Al egreso de la guarderia, el check-out se cierra (`POST /gap/checkouts`), sumando recargos de latencia si el retiro se realiza fuera de horario.
+
+---
+
 ## 4. Matriz de Base de Datos Relacional Completa (T-01 a T-40)
 
 A continuacion se detallan las 40 tablas estructuradas creadas fisicamente en los scripts DDL de base de datos:
