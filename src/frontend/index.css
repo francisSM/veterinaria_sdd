@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+@theme {
+  /* White & Pastel Color Palette Theme Overrides for Tailwind CSS v4 */
+  --color-slate-950: #ffffff;
+  --color-slate-900: #f8fafc;
+  --color-slate-800: #e2e8f0;
+  --color-slate-700: #cbd5e1;
+  --color-slate-600: #94a3b8;
+  --color-slate-500: #64748b;
+  --color-slate-400: #475569;
+  --color-slate-300: #334155;
+  --color-slate-200: #1e293b;
+  --color-slate-100: #0f172a;
+  
+  /* Alert / Special backgrounds */
+  --color-red-950: #ffe4e6; /* rose-100 */
+  --color-amber-950: #fef3c7; /* amber-100 */
+  --color-emerald-950: #d1fae5; /* emerald-100 */
+  
+  /* Bright accents mapped to professional pastels and high-contrast texts */
+  --color-emerald-400: #059669; /* emerald-600 */
+  --color-emerald-500: #10b981; /* emerald-500 */
+  
+  --color-teal-400: #0d9488; /* teal-600 */
+  --color-teal-500: #14b8a6; /* teal-500 */
+  
+  --color-red-400: #e11d48; /* rose-600 */
+  --color-red-500: #f43f5e; /* rose-500 */
+  
+  --color-amber-400: #d97706; /* amber-600 */
+  --color-amber-500: #f59e0b; /* amber-500 */
+  
+  --color-indigo-400: #4f46e5; /* indigo-600 */
+  --color-indigo-500: #6366f1; /* indigo-500 */
+}
+
+body {
+  background-color: #f8fafc;
+  color: #1e293b;
+}
