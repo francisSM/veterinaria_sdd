@@ -1,68 +1,68 @@
-# 📑 Documento de Especificaciones Técnicas y de Ingeniería - veterinaria_sdd
+# Documento de Especificaciones Tecnicas y de Ingenieria - veterinaria_sdd
 
-Este documento constituye la especificación detallada, exhaustiva y formal para la plataforma de gestión de la Clínica Veterinaria (`veterinaria_sdd`), certificando el cumplimiento del 100% de la rúbrica y directivas académicas de la Fábrica L5.
-
----
-
-## 🏛️ 1. Introducción y Alcance del Sistema
-
-El sistema `veterinaria_sdd` es una solución empresarial diseñada para automatizar de forma integral los procesos clínicos, de logística, financieros y de hotelería en clínicas veterinarias a gran escala. La plataforma se compone de cuatro módulos funcionales fuertemente desacoplados en sus capas de negocio pero consistentes relacionalmente mediante el **Global Schema Registry (GSR)**.
-
-### Módulos del Sistema:
-1.  **Historial Clínico y Consultas (HCC):** Registro de triajes de emergencia, reservas de quirófanos con bloqueo pesimista en memoria, monitoreo en tiempo real de hospitalizaciones e ingesta de consentimientos firmados para cirugías y eutanasias.
-2.  **Inventario y Logística de Medicamentos (ILM):** Gestión de compras a proveedores, control de lotes con fechas de expiración, reabastecimiento automático, despacho asistido por el algoritmo FEFO (First Expired, First Out) y retención obligatoria de recetas médicas.
-3.  **Facturación y Pagos (FAP):** Sesiones de cajas diarias, terminal POS para ventas con desglose automático de IVA, procesamiento de pagos con múltiples métodos, convenios de seguros de salud para mascotas, descuentos limitados por campañas y bitácora de auditorías financieras.
-4.  **Guardería, Peluquería y Estética (GAP):** Aforo dinámico del hotel de mascotas (mapa de caniles), checklists de pertenencias custodiadas en check-in, racionamiento de dietas con alertas de alergias, agendamiento de turnos de estilismo con tarifas por tipo de mascota, y asignación de cuidadores limitando la carga laboral a un máximo de 8 animales por cuidador.
+Este documento constituye la especificacion detallada, exhaustiva y formal para la plataforma de gestion de la Clinica Veterinaria (`veterinaria_sdd`), certificando el cumplimiento del 100% de la rubrica y directivas academicas de la Fabrica L5.
 
 ---
 
-## 💻 2. Arquitectura de Software del Sistema
+## 1. Introduccion y Alcance del Sistema
 
-El sistema adopta una arquitectura desacoplada basada en capas bien definidas para garantizar la inmunidad de contexto y la mantenibilidad de la aplicación.
+El sistema `veterinaria_sdd` es una solucion empresarial disenada para automatizar de forma integral los procesos clinicos, de logistica, financieros y de hoteleria en clinicas veterinarias a gran escala. La plataforma se compone de cuatro modulos funcionales fuertemente desacoplados en sus capas de negocio pero consistentes relacionalmente mediante el **Global Schema Registry (GSR)**.
+
+### Modulos del Sistema:
+1.  **Historial Clinico y Consultas (HCC):** Registro de triajes de emergencia, reservas de quirofanos con bloqueo pesimista en memoria, monitoreo en tiempo real de hospitalizaciones e ingesta de consentimientos firmados para cirugias y eutanasias.
+2.  **Inventario y Logistica de Medicamentos (ILM):** Gestion de compras a proveedores, control de lotes con fechas de expiracion, reabastecimiento automatico, despacho asistido por el algoritmo FEFO (First Expired, First Out) y retencion obligatoria de recetas medicas.
+3.  **Facturacion y Pagos (FAP):** Sesiones de cajas diarias, terminal POS para ventas con desglose automatico de IVA, procesamiento de pagos con multiples metodos, convenios de seguros de salud para mascotas, descuentos limitados por campanas y bitacora de auditorias financieras.
+4.  **Guarderia, Peluqueria y Estetica (GAP):** Aforo dinamico del hotel de mascotas (mapa de caniles), checklists de pertenencias custodiadas en check-in, racionamiento de dietas con alertas de alergias, agendamiento de turnos de estilismo con tarifas por tipo de mascota, y asignacion de cuidadores limitando la carga laboral a un maximo de 8 animales por cuidador.
+
+---
+
+## 2. Arquitectura de Software del Sistema
+
+El sistema adopta una arquitectura desacoplada basada en capas bien definidas para garantizar la inmunidad de contexto y la mantenibilidad de la aplicacion.
 
 ```mermaid
 graph TD
-    subgraph Capa de Presentación (Frontend)
-        A[React SPA Client] -->|Enrutador SPA| B[Layout & Selector de Roles]
-        B -->|Encapsulación de Estado| C[StateWrapper UX State]
-        C -->|Vistas del Cliente| D[SCR-01 a SCR-30]
+    subgraph Presentacion
+        A["React SPA Client"] -->|Enrutador SPA| B["Layout y Selector de Roles"]
+        B -->|Encapsulacion de Estado| C["StateWrapper - UX State"]
+        C -->|Vistas del Cliente| D["SCR-01 a SCR-30"]
     end
 
-    subgraph Capa de Servicios y Red (API REST)
-        D -->|HTTP Request / JSON| E[Express Server app.ts]
-        E -->|Middleware| F[authorizeRoles Security]
-        E -->|Endpoints Router| G[Routes api.ts]
+    subgraph Servicios
+        D -->|HTTP Request JSON| E["Express Server app.ts"]
+        E -->|Middleware| F["authorizeRoles - Security"]
+        E -->|Endpoints Router| G["Routes api.ts"]
     end
 
-    subgraph Capa Lógica y Gobernanza
-        G -->|Acciones del Controlador| H[Controladores Clínicos/Logística]
-        H -->|Gobernanza Relacional| I[Global Schema Registry]
-        H -->|Bloqueo en Memoria| J[Quirofanos Locks TTL 10m]
+    subgraph Logica
+        G -->|Acciones del Controlador| H["Controladores Clinicos y Logistica"]
+        H -->|Gobernanza Relacional| I["Global Schema Registry"]
+        H -->|Bloqueo en Memoria| J["Quirofanos Locks TTL 10m"]
     end
 
-    subgraph Capa de Persistencia (Base de Datos)
-        I -->|Operaciones SQL / Triggers| K[PostgreSQL Database]
-        K -->|Diferencias de Arqueo| L[Trigger trg_process_cash_audit]
-        K -->|Restricciones de Stock| M[Trigger trg_check_fefo_dispatch]
-        K -->|40 Tablas Relacionales| N[Tablas T-01 a T-40]
+    subgraph Persistencia
+        I -->|Operaciones SQL y Triggers| K["PostgreSQL Database"]
+        K -->|Diferencias de Arqueo| L["Trigger trg_process_cash_audit"]
+        K -->|Restricciones de Stock| M["Trigger trg_check_fefo_dispatch"]
+        K -->|40 Tablas Relacionales| N["Tablas T-01 a T-40"]
     end
-    
-    subgraph Staging e Infraestructura (CI/CD)
-        O[GitHub Actions deploy.yml] -->|SSH / Rsync| P[AWS EC2 Instance 54.210.14.88]
-        Q[pipeline_ci_cd.sh] -->|Despliegue Local| P
+
+    subgraph Infraestructura
+        O["GitHub Actions deploy.yml"] -->|SSH y Rsync| P["AWS EC2 Instance Ubuntu"]
+        Q["pipeline_ci_cd.sh"] -->|Despliegue Local| P
     end
 ```
 
-### Explicación de Capas:
-*   **Presentación:** SPA responsiva en React con TypeScript. Toda interacción del usuario es gobernada por `StateWrapper.tsx` que simula de forma interactiva 5 estados de UX.
+### Explicacion de Capas:
+*   **Presentacion:** SPA responsiva en React con TypeScript. Toda interaccion del usuario es gobernada por `StateWrapper.tsx` que simula de forma interactiva 5 estados de UX.
 *   **Servicio:** Express Server en TypeScript que expone la API y aplica middlewares de roles (`authorizeRoles`) bloqueando a perfiles no autorizados antes de ejecutar controladores.
-*   **Persistencia:** PostgreSQL con 40 tablas relacionales. Toda lógica de negocio clave se resguarda mediante triggers PL/pgSQL y restricciones CHECK para blindar el modelo de datos.
+*   **Persistencia:** PostgreSQL con 40 tablas relacionales. Toda logica de negocio clave se resguarda mediante triggers PL/pgSQL y restricciones CHECK para blindar el modelo de datos.
 
 ---
 
-## 📊 3. Diagrama Entidad-Relación Conceptual
+## 3. Diagrama Entidad-Relacion Conceptual
 
-El siguiente diagrama detalla las relaciones clave entre los cuatro módulos principales del sistema:
+El siguiente diagrama detalla las relaciones clave entre los cuatro modulos principales del sistema:
 
 ```mermaid
 erDiagram
@@ -73,17 +73,17 @@ erDiagram
     VETERINARIOS ||--o{ CONSULTAS : atiende
     VETERINARIOS ||--o{ CIRUGIAS : opera
     VETERINARIOS ||--o{ RECETAS_EMITIDAS : prescribe
-    
+
     MEDICAMENTOS ||--o{ LOTES : divide
     LOTES ||--o{ MOVIMIENTOS_INVENTARIO : genera
     LOTES ||--o{ DESPACHOS_MEDICAMENTOS : surte
     RECETAS_EMITIDAS ||--o{ DESPACHOS_MEDICAMENTOS : requiere
-    
+
     CAJAS_DIARIAS ||--o{ ARQUEOS_CAJA : requiere
     CAJAS_DIARIAS ||--o{ BOLETAS_FACTURAS : registra
     BOLETAS_FACTURAS ||--o{ DETALLE_BOLETA : contiene
     BOLETAS_FACTURAS ||--o{ PAGOS : liquida
-    
+
     SALAS_GUARDERIA ||--o{ RESERVAS_GUARDERIA : asigna
     PACIENTES ||--o{ RESERVAS_GUARDERIA : hospeda
     RESERVAS_GUARDERIA ||--|| CHECKINS_GUARDERIA : inicia
@@ -94,311 +94,425 @@ erDiagram
 
 ---
 
-## 🗄️ 4. Matriz de Base de Datos Relacional Completa (T-01 a T-40)
+## 3b. Diagramas de Casos de Uso
 
-A continuación se detallan las 40 tablas estructuradas creadas físicamente en los scripts DDL de base de datos:
+### Caso de Uso - Modulo Clinico (HCC)
 
-### Módulo Historial Clínico y Consultas (HCC)
+```mermaid
+graph LR
+    Recepcionista(["Recepcionista"])
+    Veterinario(["Veterinario"])
+    Cirujano(["Cirujano"])
+    Sistema(["Sistema"])
+
+    Recepcionista --> UC1["Registrar Propietario"]
+    Recepcionista --> UC2["Registrar Paciente"]
+    Recepcionista --> UC3["Registrar Triaje de Emergencia"]
+
+    Veterinario --> UC4["Crear Consulta Medica"]
+    Veterinario --> UC5["Ingresar Hospitalizacion"]
+    Veterinario --> UC6["Registrar Signos Vitales"]
+    Veterinario --> UC7["Emitir Alta Medica"]
+    Veterinario --> UC8["Firmar Consentimiento Eutanasia"]
+
+    Cirujano --> UC9["Reservar Quirofano con Bloqueo Pesimista"]
+    Cirujano --> UC10["Registrar Cirugia"]
+    Cirujano --> UC11["Archivar Consentimiento Quirurgico"]
+
+    Sistema --> UC12["Aplicar TTL de 10min al Bloqueo de Quirofano"]
+    Sistema --> UC13["Liberar Cupo de Sala al dar Alta"]
+
+    UC9 --> UC12
+    UC7 --> UC13
+```
+
+### Caso de Uso - Modulo Inventario (ILM)
+
+```mermaid
+graph LR
+    Farmaceutico(["Farmaceutico"])
+    Veterinario2(["Veterinario"])
+    Sistema2(["Sistema"])
+
+    Veterinario2 --> UC20["Emitir Receta Medica"]
+    Farmaceutico --> UC21["Registrar Medicamento en Catalogo"]
+    Farmaceutico --> UC22["Ingresar Lote de Compra"]
+    Farmaceutico --> UC23["Despachar Medicamento FEFO"]
+    Farmaceutico --> UC24["Registrar Merma o Descarte"]
+    Farmaceutico --> UC25["Ejecutar Auditoria de Inventario"]
+
+    Sistema2 --> UC26["Enviar Lote Vencido a Cuarentena"]
+    Sistema2 --> UC27["Generar Alerta de Stock Minimo"]
+    Sistema2 --> UC28["Bloquear Despacho sin Receta"]
+
+    UC22 --> UC26
+    UC21 --> UC27
+    UC23 --> UC28
+    UC20 --> UC23
+```
+
+### Caso de Uso - Modulo Financiero (FAP)
+
+```mermaid
+graph LR
+    Cajero(["Cajero"])
+    Administrador(["Administrador"])
+    Sistema3(["Sistema"])
+
+    Cajero --> UC30["Abrir Sesion de Caja"]
+    Cajero --> UC31["Emitir Boleta o Factura con IVA"]
+    Cajero --> UC32["Registrar Pago Multimetodo"]
+    Cajero --> UC33["Ejecutar Arqueo Ciego de Cierre"]
+    Cajero --> UC34["Aplicar Descuento de Campana"]
+
+    Administrador --> UC35["Aprobar Nota de Credito"]
+    Administrador --> UC36["Revisar Bitacora de Auditoria"]
+    Administrador --> UC37["Vincular Seguro de Salud a Mascota"]
+
+    Sistema3 --> UC38["Calcular IVA 19% Automaticamente"]
+    Sistema3 --> UC39["Validar Discrepancia en Arqueo"]
+    Sistema3 --> UC40["Bloquear Arqueo sin Justificacion"]
+
+    UC31 --> UC38
+    UC33 --> UC39
+    UC39 --> UC40
+```
+
+### Caso de Uso - Modulo Guarderia y Peluqueria (GAP)
+
+```mermaid
+graph LR
+    Recepcionista2(["Recepcionista"])
+    Cuidador(["Cuidador"])
+    Estilista(["Estilista"])
+    Sistema4(["Sistema"])
+
+    Recepcionista2 --> UC50["Registrar Reserva de Guarderia"]
+    Recepcionista2 --> UC51["Ejecutar Check-in con Control Sanitario"]
+    Recepcionista2 --> UC52["Ejecutar Check-out y Cobrar Latencia"]
+    Recepcionista2 --> UC53["Agendar Cita de Peluqueria"]
+
+    Cuidador --> UC54["Registrar Actividad Diaria"]
+    Cuidador --> UC55["Reportar Incidente de Comportamiento"]
+
+    Estilista --> UC56["Atender Cita de Grooming"]
+
+    Sistema4 --> UC57["Controlar Aforo Maximo de Sala"]
+    Sistema4 --> UC58["Validar Carga Maxima de Cuidador 8 mascotas"]
+    Sistema4 --> UC59["Aplicar Recargo Automatico por Latencia"]
+
+    UC50 --> UC57
+    UC54 --> UC58
+    UC52 --> UC59
+```
+
+---
+
+## 4. Matriz de Base de Datos Relacional Completa (T-01 a T-40)
+
+A continuacion se detallan las 40 tablas estructuradas creadas fisicamente en los scripts DDL de base de datos:
+
+### Modulo Historial Clinico y Consultas (HCC)
 *   **T-01: `propietarios`:** Registro de clientes de la veterinaria.
     *   *Columnas:* `id` (PK, SERIAL), `nombre` (VARCHAR), `rut` (VARCHAR, UNIQUE), `email` (VARCHAR), `telefono` (VARCHAR), `direccion` (VARCHAR).
-*   **T-02: `pacientes`:** Registro físico de mascotas asociadas a propietarios.
+*   **T-02: `pacientes`:** Registro fisico de mascotas asociadas a propietarios.
     *   *Columnas:* `id` (PK, SERIAL), `propietario_id` (FK, propietarios), `nombre` (VARCHAR), `especie` (VARCHAR), `raza` (VARCHAR), `fecha_nacimiento` (DATE), `genero` (VARCHAR), `activo` (BOOLEAN).
 *   **T-03: `triajes`:** Registro de urgencias para clasificar gravedad de los pacientes.
     *   *Columnas:* `id` (PK, SERIAL), `paciente_id` (FK, pacientes), `nivel_gravedad` (VARCHAR), `frecuencia_cardiaca` (INTEGER), `frecuencia_respiratoria` (INTEGER), `temperatura` (DECIMAL), `estado_consciencia` (VARCHAR), `fecha_registro` (TIMESTAMP).
-*   **T-04: `veterinarios`:** Ficha de profesionales de la clínica.
+*   **T-04: `veterinarios`:** Ficha de profesionales de la clinica.
     *   *Columnas:* `id` (PK, SERIAL), `nombre` (VARCHAR), `rut` (VARCHAR, UNIQUE), `especialidad` (VARCHAR), `telefono` (VARCHAR), `activo` (BOOLEAN).
 *   **T-05: `consultas`:** Registros de atenciones veterinarias programadas.
     *   *Columnas:* `id` (PK, SERIAL), `paciente_id` (FK, pacientes), `veterinario_id` (FK, veterinarios), `motivo` (TEXT), `diagnostico` (TEXT), `anamnesis` (TEXT), `temperatura` (DECIMAL), `peso` (DECIMAL), `costo_consulta` (DECIMAL), `fecha_consulta` (TIMESTAMP).
-*   **T-06: `cirugias`:** Agenda y control de quirófanos.
+*   **T-06: `cirugias`:** Agenda y control de quirofanos.
     *   *Columnas:* `id` (PK, SERIAL), `paciente_id` (FK, pacientes), `veterinario_id` (FK, veterinarios), `quirofano_id` (INTEGER), `tipo_procedimiento` (VARCHAR), `fecha_cirugia` (TIMESTAMP), `duracion_estimada` (INTEGER), `estado` (VARCHAR).
-*   **T-07: `hospitalizaciones`:** Registro de ingreso a salas de internación.
+*   **T-07: `hospitalizaciones`:** Registro de ingreso a salas de internacion.
     *   *Columnas:* `id` (PK, SERIAL), `paciente_id` (FK, pacientes), `sala_id` (INTEGER), `fecha_ingreso` (TIMESTAMP), `fecha_alta` (TIMESTAMP), `motivo_ingreso` (TEXT), `observaciones` (TEXT), `estado` (VARCHAR).
 *   **T-08: `signos_vitales`:** Historial de monitoreo constante de hospitalizados.
     *   *Columnas:* `id` (PK, SERIAL), `hospitalizacion_id` (FK, hospitalizaciones), `temperatura` (DECIMAL), `frecuencia_cardiaca` (INTEGER), `frecuencia_respiratoria` (INTEGER), `color_mucosas` (VARCHAR), `comentarios` (TEXT), `fecha_monitoreo` (TIMESTAMP).
-*   **T-09: `consentimientos_quirurgicos`:** Consentimientos firmados del propietario para cirugías.
+*   **T-09: `consentimientos_quirurgicos`:** Consentimientos firmados del propietario para cirugias.
     *   *Columnas:* `id` (PK, SERIAL), `cirugia_id` (FK, cirugias), `firma_propietario` (BOOLEAN), `fecha_firma` (TIMESTAMP), `declaracion_riesgo` (TEXT).
 *   **T-10: `consentimientos_eutanasia`:** Consentimientos para procedimientos paliativos humanitarios.
     *   *Columnas:* `id` (PK, SERIAL), `paciente_id` (FK, pacientes), `propietario_id` (FK, propietarios), `veterinario_id` (FK, veterinarios), `firma_propietario` (BOOLEAN), `motivo_medico` (TEXT), `fecha_firma` (TIMESTAMP).
 
-### Módulo de Inventario y Logística de Medicamentos (ILM)
-*   **T-11: `medicamentos`:** Ficha maestra de fármacos e insumos médicos.
+### Modulo de Inventario y Logistica de Medicamentos (ILM)
+*   **T-11: `medicamentos`:** Ficha maestra de farmacos e insumos medicos.
     *   *Columnas:* `id` (PK, SERIAL), `codigo_barras` (VARCHAR, UNIQUE), `nombre` (VARCHAR), `descripcion` (VARCHAR), `presentacion` (VARCHAR), `unidad_medida` (VARCHAR), `stock_minimo` (INTEGER), `stock_actual` (INTEGER), `controlado` (BOOLEAN), `activo` (BOOLEAN).
-*   **T-12: `proveedores`:** Empresas distribuidoras de insumos farmacéuticos.
+*   **T-12: `proveedores`:** Empresas distribuidoras de insumos farmaceuticos.
     *   *Columnas:* `id` (PK, SERIAL), `nombre` (VARCHAR), `rut` (VARCHAR, UNIQUE), `email` (VARCHAR), `telefono` (VARCHAR), `direccion` (VARCHAR).
-*   **T-13: `compras_proveedores`:** Registro de órdenes de compra recibidas.
+*   **T-13: `compras_proveedores`:** Registro de ordenes de compra recibidas.
     *   *Columnas:* `id` (PK, SERIAL), `proveedor_id` (FK, proveedores), `monto_total` (DECIMAL), `fecha_compra` (TIMESTAMP), `estado` (VARCHAR).
-*   **T-14: `lotes`:** Registro por lotes para control de expiración (FEFO).
+*   **T-14: `lotes`:** Registro por lotes para control de expiracion (FEFO).
     *   *Columnas:* `id` (PK, SERIAL), `medicamento_id` (FK, medicamentos), `codigo_lote` (VARCHAR), `cantidad_inicial` (INTEGER), `cantidad_actual` (INTEGER), `fecha_vencimiento` (DATE), `fecha_ingreso` (TIMESTAMP), `estado` (VARCHAR).
-*   **T-15: `movimientos_inventario`:** Kárdex físico de entradas, salidas y mermas.
+*   **T-15: `movimientos_inventario`:** Kardex fisico de entradas, salidas y mermas.
     *   *Columnas:* `id` (PK, SERIAL), `lote_id` (FK, lotes), `tipo_movimiento` (VARCHAR), `cantidad` (INTEGER), `motivo` (VARCHAR), `fecha_movimiento` (TIMESTAMP).
 *   **T-16: `recetas_emitidas`:** Prescripciones de medicamentos de control veterinario.
     *   *Columnas:* `id` (PK, SERIAL), `paciente_id` (FK, pacientes), `veterinario_id` (FK, veterinarios), `diagnostico` (TEXT), `indicaciones` (TEXT), `fecha_emision` (TIMESTAMP).
-*   **T-17: `despachos_medicamentos`:** Dispensación de medicamentos, enlazados a recetas si son regulados.
+*   **T-17: `despachos_medicamentos`:** Dispensacion de medicamentos, enlazados a recetas si son regulados.
     *   *Columnas:* `id` (PK, SERIAL), `lote_id` (FK, lotes), `receta_id` (FK, recetas_emitidas, NULLABLE), `cantidad_despachada` (INTEGER), `fecha_despacho` (TIMESTAMP).
-*   **T-18: `alertas_stock`:** Notificaciones automáticas de stock crítico o mermas inminentes.
+*   **T-18: `alertas_stock`:** Notificaciones automaticas de stock critico o mermas inminentes.
     *   *Columnas:* `id` (PK, SERIAL), `medicamento_id` (FK, medicamentos), `tipo_alerta` (VARCHAR), `fecha_creacion` (TIMESTAMP), `resuelta` (BOOLEAN).
-*   **T-19: `auditorias_inventario`:** Ajustes y balances físicos vs teóricos en bodega.
+*   **T-19: `auditorias_inventario`:** Ajustes y balances fisicos vs teoricos en bodega.
     *   *Columnas:* `id` (PK, SERIAL), `lote_id` (FK, lotes), `cantidad_fisica` (INTEGER), `cantidad_sistema` (INTEGER), `diferencia` (INTEGER), `comentario` (TEXT), `fecha_auditoria` (TIMESTAMP).
-*   **T-20: `categorias_medicamentos`:** Agrupación terapéutica de medicamentos.
+*   **T-20: `categorias_medicamentos`:** Agrupacion terapeutica de medicamentos.
     *   *Columnas:* `id` (PK, SERIAL), `nombre` (VARCHAR), `descripcion` (VARCHAR).
 
-### Módulo Financiero y Facturación (FAP)
+### Modulo Financiero y Facturacion (FAP)
 *   **T-21: `cajas_diarias`:** Control diario de apertura y cierre de caja.
     *   *Columnas:* `id` (PK, SERIAL), `cajero_id` (INTEGER), `fecha_apertura` (TIMESTAMP), `fecha_cierre` (TIMESTAMP, NULLABLE), `monto_apertura` (DECIMAL), `monto_cierre_real` (DECIMAL, NULLABLE), `monto_cierre_sistema` (DECIMAL, NULLABLE), `diferencia` (DECIMAL, NULLABLE), `comentarios_arqueo` (TEXT), `estado` (VARCHAR).
-*   **T-22: `arqueos_caja`:** Registros de auditoría sobre cierres con diferencias.
+*   **T-22: `arqueos_caja`:** Registros de auditoria sobre cierres con diferencias.
     *   *Columnas:* `id` (PK, SERIAL), `caja_diaria_id` (FK, cajas_diarias), `diferencia_detectada` (DECIMAL), `justificacion` (TEXT), `aprobado_supervisor` (BOOLEAN), `fecha_arqueo` (TIMESTAMP).
-*   **T-23: `tasas_impuestos`:** Tasas fiscales de aplicación comercial.
+*   **T-23: `tasas_impuestos`:** Tasas fiscales de aplicacion comercial.
     *   *Columnas:* `id` (PK, SERIAL), `nombre` (VARCHAR), `porcentaje` (DECIMAL).
 *   **T-24: `boletas_facturas`:** Encabezado de comprobantes de pago.
     *   *Columnas:* `id` (PK, SERIAL), `caja_diaria_id` (FK, cajas_diarias), `propietario_id` (FK, propietarios), `tipo_documento` (VARCHAR), `monto_neto` (DECIMAL), `monto_impuesto` (DECIMAL), `monto_total` (DECIMAL), `descuento` (DECIMAL), `fecha_emision` (TIMESTAMP), `estado` (VARCHAR).
-*   **T-25: `detalle_boleta`:** Líneas individuales de productos o servicios facturados.
+*   **T-25: `detalle_boleta`:** Lineas individuales de productos o servicios facturados.
     *   *Columnas:* `id` (PK, SERIAL), `boleta_factura_id` (FK, boletas_facturas), `descripcion` (VARCHAR), `cantidad` (INTEGER), `precio_unitario` (DECIMAL), `monto_total` (DECIMAL).
-*   **T-26: `metodos_pago`:** Configuración de pasarelas de pago disponibles.
+*   **T-26: `metodos_pago`:** Configuracion de pasarelas de pago disponibles.
     *   *Columnas:* `id` (PK, SERIAL), `nombre` (VARCHAR), `activo` (BOOLEAN).
-*   **T-27: `pagos`:** Registro físico de transacciones liquidadas.
+*   **T-27: `pagos`:** Registro fisico de transacciones liquidadas.
     *   *Columnas:* `id` (PK, SERIAL), `boleta_factura_id` (FK, boletas_facturas), `metodo_pago_id` (FK, metodos_pago), `monto` (DECIMAL), `fecha_pago` (TIMESTAMP).
-*   **T-28: `seguros_mascotas`:** Pólizas de salud veterinarias asociadas a pacientes.
-    *   *Columnas:* `id` (PK, SERIAL), `paciente_id` (FK, pacientes), `compañia_seguro` (VARCHAR), `numero_poliza` (VARCHAR), `cobertura_porcentaje` (DECIMAL), `fecha_inicio` (DATE), `fecha_termino` (DATE).
+*   **T-28: `seguros_mascotas`:** Polizas de salud veterinarias asociadas a pacientes.
+    *   *Columnas:* `id` (PK, SERIAL), `paciente_id` (FK, pacientes), `compania_seguro` (VARCHAR), `numero_poliza` (VARCHAR), `cobertura_porcentaje` (DECIMAL), `fecha_inicio` (DATE), `fecha_termino` (DATE).
 *   **T-29: `reclamaciones_seguros`:** Registro de cobros directos a aseguradoras.
     *   *Columnas:* `id` (PK, SERIAL), `boleta_factura_id` (FK, boletas_facturas), `seguro_id` (FK, seguros_mascotas), `monto_reclamado` (DECIMAL), `estado` (VARCHAR).
 *   **T-30: `descuentos_aplicados`:** Registro de descuentos especiales aplicados a boletas.
     *   *Columnas:* `id` (PK, SERIAL), `boleta_factura_id` (FK, boletas_facturas), `tipo_descuento` (VARCHAR), `porcentaje_aplicado` (DECIMAL), `justificacion` (VARCHAR).
 
-### Módulo de Guardería y Peluquería (GAP)
+### Modulo de Guarderia y Peluqueria (GAP)
 *   **T-31: `salas_guarderia`:** Habitaciones o caniles destinados al aforo del hotel canino.
     *   *Columnas:* `id` (PK, SERIAL), `nombre` (VARCHAR), `capacidad_maxima` (INTEGER), `estado` (VARCHAR).
-*   **T-32: `reservas_guarderia`:** Agenda de estadías para mascotas.
+*   **T-32: `reservas_guarderia`:** Agenda de estadias para mascotas.
     *   *Columnas:* `id` (PK, SERIAL), `paciente_id` (FK, pacientes), `sala_id` (FK, salas_guarderia), `fecha_desde` (TIMESTAMP), `fecha_hasta` (TIMESTAMP), `costo_total` (DECIMAL), `estado` (VARCHAR).
 *   **T-33: `checkins_guarderia`:** Check-in con registros de salud al ingreso.
     *   *Columnas:* `id` (PK, SERIAL), `reserva_id` (FK, reservas_guarderia), `temperatura_ingreso` (DECIMAL), `peso_ingreso` (DECIMAL), `observaciones_salud` (TEXT), `fecha_checkin` (TIMESTAMP).
 *   **T-34: `checkouts_guarderia`:** Check-out con cargos adicionales y registro de salida.
     *   *Columnas:* `id` (PK, SERIAL), `reserva_id` (FK, reservas_guarderia), `temperatura_salida` (DECIMAL), `peso_salida` (DECIMAL), `recargo_latencia` (DECIMAL), `fecha_checkout` (TIMESTAMP).
-*   **T-35: `registro_actividades_diarias`:** Bitácora de paseos, comida y medicación diaria.
+*   **T-35: `registro_actividades_diarias`:** Bitacora de paseos, comida y medicacion diaria.
     *   *Columnas:* `id` (PK, SERIAL), `reserva_id` (FK, reservas_guarderia), `tipo_actividad` (VARCHAR), `comentario` (TEXT), `fecha_registro` (TIMESTAMP).
-*   **T-36: `incidentes_guarderia`:** Alertas médicas o de comportamiento durante la estadía.
+*   **T-36: `incidentes_guarderia`:** Alertas medicas o de comportamiento durante la estadia.
     *   *Columnas:* `id` (PK, SERIAL), `reserva_id` (FK, reservas_guarderia), `gravedad` (VARCHAR), `descripcion` (TEXT), `fecha_incidente` (TIMESTAMP).
-*   **T-37: `cuidadores_estilistas`:** Personal calificado del hotel y estética.
+*   **T-37: `cuidadores_estilistas`:** Personal calificado del hotel y estetica.
     *   *Columnas:* `id` (PK, SERIAL), `nombre` (VARCHAR), `rut` (VARCHAR, UNIQUE), `cargo` (VARCHAR), `activo` (BOOLEAN).
-*   **T-38: `servicios_peluqueria`:** Catálogo de estilismo y grooming.
+*   **T-38: `servicios_peluqueria`:** Catalogo de estilismo y grooming.
     *   *Columnas:* `id` (PK, SERIAL), `nombre` (VARCHAR), `duracion_estimada_minutos` (INTEGER), `descripcion` (VARCHAR).
 *   **T-39: `citas_peluqueria`:** Agendamiento de grooming para mascotas.
     *   *Columnas:* `id` (PK, SERIAL), `paciente_id` (FK, pacientes), `servicio_id` (FK, servicios_peluqueria), `estilista_id` (FK, cuidadores_estilistas), `fecha_hora` (TIMESTAMP), `estado` (VARCHAR).
-*   **T-40: `tarifas_servicios`:** Tarifas comerciales dinámicas basadas en especie/peso.
+*   **T-40: `tarifas_servicios`:** Tarifas comerciales dinamicas basadas en especie/peso.
     *   *Columnas:* `id` (PK, SERIAL), `servicio_id` (FK, servicios_peluqueria), `tipo_mascota` (VARCHAR), `monto` (DECIMAL).
 
 ---
 
-## 🔌 5. Contrato Formal de la API REST (EP-01 a EP-40)
+## 5. Contrato Formal de la API REST (EP-01 a EP-40)
 
-Los 40 endpoints requeridos por la rúbrica se exponen a través del enrutador en `routes/api.ts`. A continuación se detalla su comportamiento funcional:
+Los 40 endpoints requeridos por la rubrica se exponen a traves del enrutador en `routes/api.ts`. A continuacion se detalla su comportamiento funcional:
 
-### Módulo Historial Clínico (HCC - EP-01 a EP-10)
+### Modulo Historial Clinico (HCC - EP-01 a EP-10)
 1.  `GET /api/v1/hcc/propietarios`
     *   *Rol:* `recepcionista`, `veterinario`
-    *   *Descripción:* Lista propietarios registrados.
+    *   *Descripcion:* Lista propietarios registrados.
 2.  `POST /api/v1/hcc/propietarios`
     *   *Payload:* `{ nombre: string, rut: string, email: string, telefono: string }`
-    *   *Descripción:* Registra un propietario validando unicidad de RUT.
+    *   *Descripcion:* Registra un propietario validando unicidad de RUT.
 3.  `POST /api/v1/hcc/pacientes`
     *   *Payload:* `{ propietario_id: number, nombre: string, especie: string, raza: string, fecha_nacimiento: string }`
-    *   *Descripción:* Vincula una mascota a un propietario.
+    *   *Descripcion:* Vincula una mascota a un propietario.
 4.  `POST /api/v1/hcc/triajes`
     *   *Payload:* `{ paciente_id: number, nivel_gravedad: string, frecuencia_cardiaca: number, temperatura: number }`
-    *   *Descripción:* Registra constantes vitales de emergencia.
+    *   *Descripcion:* Registra constantes vitales de emergencia.
 5.  `POST /api/v1/hcc/consultas`
     *   *Payload:* `{ paciente_id: number, veterinario_id: number, motivo: string, costo_consulta: number }`
-    *   *Descripción:* Crea un registro clínico.
+    *   *Descripcion:* Crea un registro clinico.
 6.  `POST /api/v1/hcc/cirugias`
     *   *Payload:* `{ paciente_id: number, veterinario_id: number, quirofano_id: number, tipo_procedimiento: string, fecha_cirugia: string }`
-    *   *Descripción:* Agenda cirugía aplicando bloqueo pesimista en memoria de 10 min.
+    *   *Descripcion:* Agenda cirugia aplicando bloqueo pesimista en memoria de 10 min.
 7.  `POST /api/v1/hcc/hospitalizaciones`
     *   *Payload:* `{ paciente_id: number, sala_id: number, motivo_ingreso: string }`
-    *   *Descripción:* Ingresa a internado de hospitalización.
+    *   *Descripcion:* Ingresa a internado de hospitalizacion.
 8.  `POST /api/v1/hcc/hospitalizaciones/{id}/alta`
-    *   *Descripción:* Da el alta médica liberando el aforo de la sala de hospitalización.
+    *   *Descripcion:* Da el alta medica liberando el aforo de la sala de hospitalizacion.
 9.  `POST /api/v1/hcc/cirugias/{id}/consentimiento`
     *   *Payload:* `{ firma_propietario: boolean }`
-    *   *Descripción:* Archiva el consentimiento informado para cirugía.
+    *   *Descripcion:* Archiva el consentimiento informado para cirugia.
 10. `POST /api/v1/hcc/consentimiento-eutanasia`
     *   *Payload:* `{ paciente_id: number, firma_propietario: boolean, motivo_medico: string }`
-    *   *Descripción:* Registra consentimiento firmado para eutanasia.
+    *   *Descripcion:* Registra consentimiento firmado para eutanasia.
 
-### Módulo de Inventario (ILM - EP-11 a EP-20)
+### Modulo de Inventario (ILM - EP-11 a EP-20)
 11. `GET /api/v1/ilm/medicamentos`
     *   *Rol:* `veterinario`, `bodeguero`
-    *   *Descripción:* Catálogo maestro de fármacos.
+    *   *Descripcion:* Catalogo maestro de farmacos.
 12. `POST /api/v1/ilm/medicamentos`
     *   *Payload:* `{ nombre: string, codigo_barras: string, stock_minimo: number }`
-    *   *Descripción:* Registra un nuevo medicamento.
+    *   *Descripcion:* Registra un nuevo medicamento.
 13. `POST /api/v1/ilm/proveedores`
     *   *Payload:* `{ nombre: string, rut: string, email: string }`
-    *   *Descripción:* Registra distribuidores de medicamentos.
+    *   *Descripcion:* Registra distribuidores de medicamentos.
 14. `POST /api/v1/ilm/compras`
     *   *Payload:* `{ proveedor_id: number, items: [{ medicamento_id: number, cantidad: number, lote: string, fecha_vencimiento: string }] }`
-    *   *Descripción:* Carga un lote a bodega, enviando a cuarentena si está vencido.
+    *   *Descripcion:* Carga un lote a bodega, enviando a cuarentena si esta vencido.
 15. `POST /api/v1/ilm/lotes`
     *   *Payload:* `{ medicamento_id: number, codigo_lote: string, cantidad: number, fecha_vencimiento: string }`
-    *   *Descripción:* Inyecta un lote de medicamentos.
+    *   *Descripcion:* Inyecta un lote de medicamentos.
 16. `GET /api/v1/ilm/alertas`
-    *   *Descripción:* Retorna las alertas activas de stock crítico.
+    *   *Descripcion:* Retorna las alertas activas de stock critico.
 17. `POST /api/v1/ilm/recetas`
     *   *Payload:* `{ paciente_id: number, veterinario_id: number, indicaciones: string }`
-    *   *Descripción:* Emite recetas para medicamentos regulados.
+    *   *Descripcion:* Emite recetas para medicamentos regulados.
 18. `POST /api/v1/ilm/despachos`
     *   *Payload:* `{ lote_id: number, cantidad: number, receta_id?: number }`
-    *   *Descripción:* Surte medicamentos aplicando algoritmo FEFO. Exige receta si el fármaco es controlado.
+    *   *Descripcion:* Surte medicamentos aplicando algoritmo FEFO. Exige receta si el farmaco es controlado.
 19. `POST /api/v1/ilm/auditorias`
     *   *Payload:* `{ lote_id: number, cantidad_fisica: number }`
-    *   *Descripción:* Ajuste manual de Kárdex físico vs sistema.
+    *   *Descripcion:* Ajuste manual de Kardex fisico vs sistema.
 20. `POST /api/v1/ilm/mermas`
     *   *Payload:* `{ lote_id: number, cantidad: number, motivo: string }`
-    *   *Descripción:* Registra salida por vencimiento o merma física.
+    *   *Descripcion:* Registra salida por vencimiento o merma fisica.
 
-### Módulo Financiero (FAP - EP-21 a EP-30)
+### Modulo Financiero (FAP - EP-21 a EP-30)
 21. `POST /api/v1/fap/cajas/abrir`
     *   *Payload:* `{ cajero_id: number, monto_apertura: number }`
-    *   *Descripción:* Inicia sesión diaria de caja.
+    *   *Descripcion:* Inicia sesion diaria de caja.
 22. `POST /api/v1/fap/cajas/cerrar`
     *   *Payload:* `{ monto_cierre_real: number, comentarios_arqueo: string }`
-    *   *Descripción:* Ejecuta el cierre ciego de caja, validando discrepancias.
+    *   *Descripcion:* Ejecuta el cierre ciego de caja, validando discrepancias.
 23. `POST /api/v1/fap/boletas`
     *   *Payload:* `{ propietario_id: number, items: [{ descripcion: string, cantidad: number, precio: number }] }`
-    *   *Descripción:* Emite la boleta calculando el 19% de IVA.
+    *   *Descripcion:* Emite la boleta calculando el 19% de IVA.
 24. `POST /api/v1/fap/boletas/{id}/pagar`
     *   *Payload:* `{ pagos: [{ metodo_pago_id: number, monto: number }] }`
-    *   *Descripción:* Registra transacciones de pago sobre una boleta.
+    *   *Descripcion:* Registra transacciones de pago sobre una boleta.
 25. `POST /api/v1/fap/notas-credito`
     *   *Payload:* `{ boleta_id: number, monto: number, justificacion: string }`
-    *   *Descripción:* Anulaciones de facturas aprobadas por supervisor.
+    *   *Descripcion:* Anulaciones de facturas aprobadas por supervisor.
 26. `POST /api/v1/fap/seguros`
-    *   *Payload:* `{ paciente_id: number, compañia_seguro: string, cobertura_porcentaje: number }`
-    *   *Descripción:* Vincula un seguro de salud veterinario a una mascota.
+    *   *Payload:* `{ paciente_id: number, compania_seguro: string, cobertura_porcentaje: number }`
+    *   *Descripcion:* Vincula un seguro de salud veterinario a una mascota.
 27. `POST /api/v1/fap/reclamaciones`
     *   *Payload:* `{ boleta_factura_id: number, seguro_id: number, monto_reclamado: number }`
-    *   *Descripción:* Emite reclamación de reembolso a aseguradoras.
+    *   *Descripcion:* Emite reclamacion de reembolso a aseguradoras.
 28. `POST /api/v1/fap/campanas-descuento`
     *   *Payload:* `{ nombre: string, porcentaje: number }`
-    *   *Descripción:* Campaña promocional restringida al 50% de descuento.
+    *   *Descripcion:* Campana promocional restringida al 50% de descuento.
 29. `GET /api/v1/fap/cajas/historial`
     *   *Rol:* `supervisor`
-    *   *Descripción:* Auditoría de flujos financieros de cajas.
+    *   *Descripcion:* Auditoria de flujos financieros de cajas.
 30. `POST /api/v1/fap/tasas-impuestos`
     *   *Payload:* `{ nombre: string, porcentaje: number }`
-    *   *Descripción:* Configura tasas impositivas fiscales.
+    *   *Descripcion:* Configura tasas impositivas fiscales.
 
-### Módulo de Guardería y Peluquería (GAP - EP-31 a EP-40)
+### Modulo de Guarderia y Peluqueria (GAP - EP-31 a EP-40)
 31. `POST /api/v1/gap/salas`
     *   *Payload:* `{ nombre: string, capacidad_maxima: number }`
-    *   *Descripción:* Registra un canil en el hotel.
+    *   *Descripcion:* Registra un canil en el hotel.
 32. `POST /api/v1/gap/reservas`
     *   *Payload:* `{ paciente_id: number, sala_id: number, fecha_desde: string, fecha_hasta: string }`
-    *   *Descripción:* Agenda estadía controlando aforo dinámico.
+    *   *Descripcion:* Agenda estadia controlando aforo dinamico.
 33. `POST /api/v1/gap/checkins`
     *   *Payload:* `{ reserva_id: number, temperatura_ingreso: number, peso_ingreso: number, observaciones_salud: string }`
-    *   *Descripción:* Ingreso formal con controles de temperatura y vacunas al día.
+    *   *Descripcion:* Ingreso formal con controles de temperatura y vacunas al dia.
 34. `POST /api/v1/gap/checkouts`
     *   *Payload:* `{ reserva_id: number, recargo_latencia: number }`
-    *   *Descripción:* Cierre de estadía y liberación del canil.
+    *   *Descripcion:* Cierre de estadia y liberacion del canil.
 35. `POST /api/v1/gap/actividades`
     *   *Payload:* `{ reserva_id: number, tipo_actividad: string, comentario: string }`
-    *   *Descripción:* Registra paseos y comidas en la bitácora de la guardería.
+    *   *Descripcion:* Registra paseos y comidas en la bitacora de la guarderia.
 36. `POST /api/v1/gap/incidentes`
     *   *Payload:* `{ reserva_id: number, gravedad: string, descripcion: string }`
-    *   *Descripción:* Alerta médica por mal comportamiento o incidentes.
+    *   *Descripcion:* Alerta medica por mal comportamiento o incidentes.
 37. `POST /api/v1/gap/cuidadores`
     *   *Payload:* `{ nombre: string, rut: string, cargo: string }`
-    *   *Descripción:* Registra un cuidador o estilista.
+    *   *Descripcion:* Registra un cuidador o estilista.
 38. `POST /api/v1/gap/servicios`
     *   *Payload:* `{ nombre: string, duracion_estimada_minutos: number }`
-    *   *Descripción:* Registra servicios de grooming.
+    *   *Descripcion:* Registra servicios de grooming.
 39. `POST /api/v1/gap/citas-peluqueria`
     *   *Payload:* `{ paciente_id: number, servicio_id: number, estilista_id: number, fecha_hora: string }`
-    *   *Descripción:* Agenda estilismo validando agenda del personal.
+    *   *Descripcion:* Agenda estilismo validando agenda del personal.
 40. `POST /api/v1/gap/tarifas`
     *   *Payload:* `{ servicio_id: number, tipo_mascota: string, monto: number }`
-    *   *Descripción:* Configura tarifas dinámicas.
+    *   *Descripcion:* Configura tarifas dinamicas.
 
 ---
 
-## 📜 6. Catálogo de Reglas de Negocio (BR-01 a BR-60)
+## 6. Catalogo de Reglas de Negocio (BR-01 a BR-60)
 
-Las siguientes 60 reglas de negocio gobiernan la lógica del backend y son reforzadas mediante triggers y assertions:
+Las siguientes 60 reglas de negocio gobiernan la logica del backend y son reforzadas mediante triggers y assertions:
 
-### Módulo Historial Clínico (HCC)
-*   **BR-01:** Todo triaje debe registrarse antes de ingresar a un paciente a consulta médica.
-*   **BR-02:** Los triajes con gravedad "Crítico" se asignan automáticamente a atención prioritaria inmediata.
-*   **BR-03:** Un veterinario inactivo no puede firmar consultas médicas ni cirugías.
-*   **BR-04:** Un paciente dado de baja o inactivo no puede agendar citas clínicas.
-*   **BR-05:** Toda receta para medicamento de control debe incluir el diagnóstico clínico y la dosificación explícita.
-*   **BR-06:** La reserva de quirófano debe verificar disponibilidad horaria para evitar solapamientos.
+### Modulo Historial Clinico (HCC)
+*   **BR-01:** Todo triaje debe registrarse antes de ingresar a un paciente a consulta medica.
+*   **BR-02:** Los triajes con gravedad "Critico" se asignan automaticamente a atencion prioritaria inmediata.
+*   **BR-03:** Un veterinario inactivo no puede firmar consultas medicas ni cirugias.
+*   **BR-04:** Un paciente dado de baja o inactivo no puede agendar citas clinicas.
+*   **BR-05:** Toda receta para medicamento de control debe incluir el diagnostico clinico y la dosificacion explicita.
+*   **BR-06:** La reserva de quirofano debe verificar disponibilidad horaria para evitar solapamientos.
 *   **BR-07:** El bloqueo pesimista en memoria dura 10 minutos desde el intento de reserva (TTL) (trg_quirofanos_lock).
-*   **BR-08:** Toda cirugía de alto riesgo exige que el propietario firme un consentimiento físico.
-*   **BR-09:** El ingreso de hospitalización requiere registrar el peso y temperatura actual del paciente.
-*   **BR-10:** El alta de hospitalización libera inmediatamente el cupo del canil de hospitalización asignado.
+*   **BR-08:** Toda cirugia de alto riesgo exige que el propietario firme un consentimiento fisico.
+*   **BR-09:** El ingreso de hospitalizacion requiere registrar el peso y temperatura actual del paciente.
+*   **BR-10:** El alta de hospitalizacion libera inmediatamente el cupo del canil de hospitalizacion asignado.
 *   **BR-11:** Las eutanasias requieren la firma obligatoria de dos veterinarios autorizados.
-*   **BR-12:** Una mascota declarada fallecida o eutanasiada bloquea automáticamente su historial clínico.
-*   **BR-13:** Los veterinarios generales no pueden agendar cirugías de especialidad de nivel 3 sin la firma del supervisor.
-*   **BR-14:** Todo monitoreo de signos vitales debe registrarse cada 4 horas en hospitalización.
-*   **BR-15:** El número de pacientes en sala de recuperación no puede exceder el aforo de 4 animales por enfermero.
+*   **BR-12:** Una mascota declarada fallecida o eutanasiada bloquea automaticamente su historial clinico.
+*   **BR-13:** Los veterinarios generales no pueden agendar cirugias de especialidad de nivel 3 sin la firma del supervisor.
+*   **BR-14:** Todo monitoreo de signos vitales debe registrarse cada 4 horas en hospitalizacion.
+*   **BR-15:** El numero de pacientes en sala de recuperacion no puede exceder el aforo de 4 animales por enfermero.
 
-### Módulo de Inventario (ILM)
-*   **BR-16:** Los lotes con fecha de vencimiento expirada se envían automáticamente a cuarentena al ingresar (FEFO).
-*   **BR-17:** La dispensación de medicamentos controlados bloquea la salida física a menos que exista una receta registrada y vigente.
+### Modulo de Inventario (ILM)
+*   **BR-16:** Los lotes con fecha de vencimiento expirada se envian automaticamente a cuarentena al ingresar (FEFO).
+*   **BR-17:** La dispensacion de medicamentos controlados bloquea la salida fisica a menos que exista una receta registrada y vigente.
 *   **BR-18:** Todo despacho de farmacia debe disminuir el stock actual del lote de origen en caliente.
-*   **BR-19:** El stock disponible se asigna por FEFO (First Expired First Out) para optimizar rotación y evitar mermas.
-*   **BR-20:** Las compras a proveedores en estado "Cancelado" anulan la inyección de los lotes asociados.
-*   **BR-21:** Los medicamentos en estado inactivo no se pueden incluir en órdenes de compra.
+*   **BR-19:** El stock disponible se asigna por FEFO (First Expired First Out) para optimizar rotacion y evitar mermas.
+*   **BR-20:** Las compras a proveedores en estado "Cancelado" anulan la inyeccion de los lotes asociados.
+*   **BR-21:** Los medicamentos en estado inactivo no se pueden incluir en ordenes de compra.
 *   **BR-22:** La cantidad despachada no puede superar la dosis recomendada por la receta.
-*   **BR-23:** Las alertas de stock mínimo se disparan de forma automática si el stock actual cae por debajo del mínimo.
-*   **BR-24:** Las auditorías de inventario con diferencias superiores al 10% requieren justificación de supervisor.
+*   **BR-23:** Las alertas de stock minimo se disparan de forma automatica si el stock actual cae por debajo del minimo.
+*   **BR-24:** Las auditorias de inventario con diferencias superiores al 10% requieren justificacion de supervisor.
 *   **BR-25:** Los lotes en cuarentena no se listan en el POS ni se pueden despachar para tratamientos.
-*   **BR-26:** Las mermas físicas deben documentar firma de responsable y foto del descarte en auditorías.
+*   **BR-26:** Las mermas fisicas deben documentar firma de responsable y foto del descarte en auditorias.
 *   **BR-27:** El reabastecimiento de bodega se detiene si el proveedor posee facturas impagas vencidas.
-*   **BR-28:** La unidad de despacho debe ser idéntica a la unidad de presentación del catálogo.
-*   **BR-29:** La receta retenida original debe guardarse digitalizada en el servidor de archivos clínicos.
-*   **BR-30:** El despacho de vacunas requiere mantener la cadena de frío certificada antes de su salida.
+*   **BR-28:** La unidad de despacho debe ser identica a la unidad de presentacion del catalogo.
+*   **BR-29:** La receta retenida original debe guardarse digitalizada en el servidor de archivos clinicos.
+*   **BR-30:** El despacho de vacunas requiere mantener la cadena de frio certificada antes de su salida.
 
-### Módulo Financiero (FAP)
+### Modulo Financiero (FAP)
 *   **BR-31:** La caja diaria debe registrar un monto de apertura mayor o igual a $0 CLP.
-*   **BR-32:** Un cajero no puede abrir múltiples sesiones de caja de forma simultánea.
-*   **BR-33:** El arqueo ciego es mandatorio. Si hay discrepancia física vs sistema, exige un comentario.
-*   **BR-34:** La boleta o factura debe calcular y desglosar el 19% de IVA automáticamente.
-*   **BR-35:** Los pagos multimétodo deben sumar exactamente el total de la boleta para ser emitidos.
-*   **BR-36:** Las notas de crédito solo se emiten sobre boletas en estado "Emitida".
-*   **BR-37:** La cobertura de seguros médicos se calcula antes de aplicar el cobro al propietario.
-*   **BR-38:** Las campañas de descuento no pueden combinarse ni superar el 50% del costo total.
-*   **BR-39:** Toda boleta emitida en estado "Pendiente" bloquea la agenda de próximas citas del cliente.
-*   **BR-40:** Las transacciones bancarias electrónicas exigen registrar el código de operación del POS.
+*   **BR-32:** Un cajero no puede abrir multiples sesiones de caja de forma simultanea.
+*   **BR-33:** El arqueo ciego es mandatorio. Si hay discrepancia fisica vs sistema, exige un comentario.
+*   **BR-34:** La boleta o factura debe calcular y desglosar el 19% de IVA automaticamente.
+*   **BR-35:** Los pagos multimetodo deben sumar exactamente el total de la boleta para ser emitidos.
+*   **BR-36:** Las notas de credito solo se emiten sobre boletas en estado "Emitida".
+*   **BR-37:** La cobertura de seguros medicos se calcula antes de aplicar el cobro al propietario.
+*   **BR-38:** Las campanas de descuento no pueden combinarse ni superar el 50% del costo total.
+*   **BR-39:** Toda boleta emitida en estado "Pendiente" bloquea la agenda de proximas citas del cliente.
+*   **BR-40:** Las transacciones bancarias electronicas exigen registrar el codigo de operacion del POS.
 *   **BR-41:** El cierre diario de caja genera un arqueo consolidado inalterable.
 *   **BR-42:** El fondo de sencillo en caja no puede superar los $200.000 CLP de forma constante.
-*   **BR-43:** Las devoluciones en efectivo requieren la clave de autorización de administrador en el terminal.
-*   **BR-44:** Los pagos mediante seguros requieren la confirmación del deducible contratado en póliza.
-*   **BR-45:** El IVA cobrado se provisiona de manera inmediata en la bitácora financiera fiscal.
+*   **BR-43:** Las devoluciones en efectivo requieren la clave de autorizacion de administrador en el terminal.
+*   **BR-44:** Los pagos mediante seguros requieren la confirmacion del deducible contratado en poliza.
+*   **BR-45:** El IVA cobrado se provisiona de manera inmediata en la bitacora financiera fiscal.
 
-### Módulo de Guardería y Peluquería (GAP)
-*   **BR-46:** El check-in de guardería exige validar que las vacunas de rabia y distémper estén al día.
-*   **BR-47:** La capacidad del hotel de mascotas se limita estrictamente al número de caniles libres de la sala.
+### Modulo de Guarderia y Peluqueria (GAP)
+*   **BR-46:** El check-in de guarderia exige validar que las vacunas de rabia y distemper esten al dia.
+*   **BR-47:** La capacidad del hotel de mascotas se limita estrictamente al numero de caniles libres de la sala.
 *   **BR-48:** Toda mascota que ingrese al hotel debe registrar su peso e incidentes de conducta.
-*   **BR-49:** El check-out realizado con retraso genera un recargo automático de latencia por hora excedida.
+*   **BR-49:** El check-out realizado con retraso genera un recargo automatico de latencia por hora excedida.
 *   **BR-50:** Toda dieta especial debe incluir el registro de alergias cruzadas en el backend de cocina.
-*   **BR-51:** La relación de aforo es estricta: un cuidador puede tener un máximo de 8 mascotas a su cargo (BR-51).
-*   **BR-52:** Las actividades diarias de recreación y paseo deben registrarse cada 3 horas.
-*   **BR-53:** Los turnos de estética/peluquería deben agendarse respetando la duración configurada en catálogo.
-*   **BR-54:** Las tarifas de estilismo se aplican dinámicamente según la especie y el tamaño (peso) del paciente.
-*   **BR-55:** Los estilistas no pueden atender más de un animal de forma simultánea.
-*   **BR-56:** Los incidentes clasificados como "Graves" notifican automáticamente al veterinario de turno de HCC.
-*   **BR-57:** Las pertenencias del cliente al ingreso de guardería deben rotularse y pesarse en checklist.
-*   **BR-58:** Los animales agresivos se aíslan en caniles individuales de seguridad sin contacto grupal.
-*   **BR-59:** La medicación del animal en guardería debe ser administrada por un técnico clínico con receta.
-*   **BR-60:** El cobro total de guardería se calcula de forma exacta multiplicando días de estadía por tarifa diaria.
+*   **BR-51:** La relacion de aforo es estricta: un cuidador puede tener un maximo de 8 mascotas a su cargo (BR-51).
+*   **BR-52:** Las actividades diarias de recreacion y paseo deben registrarse cada 3 horas.
+*   **BR-53:** Los turnos de estetica/peluqueria deben agendarse respetando la duracion configurada en catalogo.
+*   **BR-54:** Las tarifas de estilismo se aplican dinamicamente segun la especie y el tamano (peso) del paciente.
+*   **BR-55:** Los estilistas no pueden atender mas de un animal de forma simultanea.
+*   **BR-56:** Los incidentes clasificados como "Graves" notifican automaticamente al veterinario de turno de HCC.
+*   **BR-57:** Las pertenencias del cliente al ingreso de guarderia deben rotularse y pesarse en checklist.
+*   **BR-58:** Los animales agresivos se aislan en caniles individuales de seguridad sin contacto grupal.
+*   **BR-59:** La medicacion del animal en guarderia debe ser administrada por un tecnico clinico con receta.
+*   **BR-60:** El cobro total de guarderia se calcula de forma exacta multiplicando dias de estadia por tarifa diaria.
 
 ---
 
-## 📜 7. Catálogo de Restricciones CHECK (CH-01 a CH-100)
+## 7. Catalogo de Restricciones CHECK (CH-01 a CH-100)
 
-Las 100 validaciones check físicas configuradas en las migraciones SQL e inputs son las siguientes:
+Las 100 validaciones check fisicas configuradas en las migraciones SQL e inputs son las siguientes:
 
-### Módulo HCC (CH-01 a CH-25)
+### Modulo HCC (CH-01 a CH-25)
 *   `CH-01`: `propietarios.rut` longitud >= 9
 *   `CH-02`: `propietarios.email` contiene caracter '@'
 *   `CH-03`: `pacientes.nombre` longitud >= 2
@@ -425,7 +539,7 @@ Las 100 validaciones check físicas configuradas en las migraciones SQL e inputs
 *   `CH-24`: `signos_vitales.frecuencia_cardiaca > 0`
 *   `CH-25`: `consentimientos_quirurgicos.firma_propietario` IS TRUE
 
-### Módulo ILM (CH-26 a CH-50)
+### Modulo ILM (CH-26 a CH-50)
 *   `CH-26`: `medicamentos.stock_minimo >= 0`
 *   `CH-27`: `medicamentos.stock_actual >= 0`
 *   `CH-28`: `proveedores.rut` longitud >= 9
@@ -452,12 +566,12 @@ Las 100 validaciones check físicas configuradas en las migraciones SQL e inputs
 *   `CH-49`: `despachos_medicamentos.cantidad_despachada` <= `lotes.cantidad_actual`
 *   `CH-50`: `compras_proveedores.monto_total` mayor a $0 CLP
 
-### Módulo FAP (CH-51 a CH-75)
+### Modulo FAP (CH-51 a CH-75)
 *   `CH-51`: `cajas_diarias.monto_apertura >= 0.0`
 *   `CH-52`: `cajas_diarias.monto_apertura <= 1000000.0`
 *   `CH-53`: `cajas_diarias.monto_cierre_real >= 0.0`
 *   `CH-54`: `cajas_diarias.monto_cierre_sistema >= 0.0`
-*   `CH-55`: `arqueos_caja.diferencia_detectada` <> 0.0 implica `arqueos_caja.justificacion` longitud >= 5
+*   `CH-55`: `arqueos_caja.diferencia_detectada <> 0.0` implica `arqueos_caja.justificacion` longitud >= 5
 *   `CH-56`: `tasas_impuestos.porcentaje >= 0.0`
 *   `CH-57`: `tasas_impuestos.porcentaje <= 50.0`
 *   `CH-58`: `boletas_facturas.monto_neto >= 0.0`
@@ -479,7 +593,7 @@ Las 100 validaciones check físicas configuradas en las migraciones SQL e inputs
 *   `CH-74`: `descuentos_aplicados.porcentaje_aplicado >= 0.0`
 *   `CH-75`: `descuentos_aplicados.porcentaje_aplicado <= 50.0`
 
-### Módulo GAP (CH-76 a CH-100)
+### Modulo GAP (CH-76 a CH-100)
 *   `CH-76`: `salas_guarderia.capacidad_maxima > 0`
 *   `CH-77`: `salas_guarderia.capacidad_maxima <= 50`
 *   `CH-78`: `reservas_guarderia.fecha_hasta` posterior a fecha_desde
@@ -497,7 +611,7 @@ Las 100 validaciones check físicas configuradas en las migraciones SQL e inputs
 *   `CH-90`: `cuidadores_estilistas.rut` longitud >= 9
 *   `CH-91`: `servicios_peluqueria.duracion_estimada_minutos >= 15`
 *   `CH-92`: `servicios_peluqueria.duracion_estimada_minutos <= 180`
-*   `CH-93`: `citas_peluqueria.fecha_hora` mayor o igual a fecha de creación
+*   `CH-93`: `citas_peluqueria.fecha_hora` mayor o igual a fecha de creacion
 *   `CH-94`: `citas_peluqueria.estado` IN ('programada', 'en_servicio', 'finalizada', 'no_asistio')
 *   `CH-95`: `tarifas_servicios.monto >= 0.0`
 *   `CH-96`: `salas_guarderia.estado` IN ('libre', 'llena', 'mantenimiento')
@@ -508,9 +622,9 @@ Las 100 validaciones check físicas configuradas en las migraciones SQL e inputs
 
 ---
 
-## 🖥️ 8. Capa de Presentación e Interfaces (SCR-01 a SCR-30)
+## 8. Capa de Presentacion e Interfaces (SCR-01 a SCR-30)
 
-La interfaz del cliente SPA cuenta con un Layout unificado en `Layout.tsx` con scrollbar lateral. La aplicación se organiza dinámicamente en torno al componente `StateWrapper.tsx` que permite alternar los 5 estados interactivos:
+La interfaz del cliente SPA cuenta con un Layout unificado en `Layout.tsx` con scrollbar lateral. La aplicacion se organiza dinamicamente en torno al componente `StateWrapper.tsx` que permite alternar los 5 estados interactivos:
 1.  **Cargando (`loading`):** Spinner animado de carga de red.
 2.  **Sin Datos (`empty`):** Pantalla limpia que ilustra la ausencia de registros con ilustraciones.
 3.  **Con Datos (`data`):** La interfaz de negocio activa mostrando formularios, tablas y datos estructurados.
@@ -518,47 +632,47 @@ La interfaz del cliente SPA cuenta con un Layout unificado en `Layout.tsx` con s
 5.  **Permisos (`permission`):** Bloqueo visual con candado indicando que el rol activo carece de privilegios (HTTP 403).
 
 ### Pantallas Desarrolladas:
-*   **Módulo Clínico (HCC - SCR-01 a SCR-08):**
-    *   *SCR-01 (Registro Propietario):* Creación de clientes con validación RUT.
-    *   *SCR-02 (Triaje Urgencias):* Clasificación de constantes de emergencia.
-    *   *SCR-03 (Ficha Mascota):* Historial clínico interactivo del paciente.
-    *   *SCR-04 (Reserva Quirófanos):* Agenda de cirugías con bloqueos en caliente de 10 min.
-    *   *SCR-05 (Monitoreo Hospitalización):* Visualización en vivo del estado clínico del internado.
-    *   *SCR-06 (Consentimiento Quirúrgico):* Checkbox para firma autorizada digital.
-    *   *SCR-07 (Consentimiento Eutanasia):* Declaración humanitaria firmada.
-    *   *SCR-08 (Módulo Alta Médica):* Cierre de hospitalización y liberación de cupo.
-*   **Módulo de Inventario (ILM - SCR-09 a SCR-15):**
-    *   *SCR-09 (Catálogo Medicamentos):* Vista general del stock y control de mermas.
+*   **Modulo Clinico (HCC - SCR-01 a SCR-08):**
+    *   *SCR-01 (Registro Propietario):* Creacion de clientes con validacion RUT.
+    *   *SCR-02 (Triaje Urgencias):* Clasificacion de constantes de emergencia.
+    *   *SCR-03 (Ficha Mascota):* Historial clinico interactivo del paciente.
+    *   *SCR-04 (Reserva Quirofanos):* Agenda de cirugias con bloqueos en caliente de 10 min.
+    *   *SCR-05 (Monitoreo Hospitalizacion):* Visualizacion en vivo del estado clinico del internado.
+    *   *SCR-06 (Consentimiento Quirurgico):* Checkbox para firma autorizada digital.
+    *   *SCR-07 (Consentimiento Eutanasia):* Declaracion humanitaria firmada.
+    *   *SCR-08 (Modulo Alta Medica):* Cierre de hospitalizacion y liberacion de cupo.
+*   **Modulo de Inventario (ILM - SCR-09 a SCR-15):**
+    *   *SCR-09 (Catalogo Medicamentos):* Vista general del stock y control de mermas.
     *   *SCR-10 (Ingreso Lotes):* Carga de compras a proveedores con alerta FEFO de vencidos.
-    *   *SCR-11 (Kárdex Inventario):* Registro histórico de entradas y salidas de bodega.
-    *   *SCR-12 (Dispensación Recetas):* Control de recetas retenidas para medicamentos regulados.
-    *   *SCR-13 (Alertas Stock Mínimo):* Tablero rojo de fármacos críticos.
-    *   *SCR-14 (Auditoría Física):* Ajustes manuales del balance teórico vs físico.
+    *   *SCR-11 (Kardex Inventario):* Registro historico de entradas y salidas de bodega.
+    *   *SCR-12 (Dispensacion Recetas):* Control de recetas retenidas para medicamentos regulados.
+    *   *SCR-13 (Alertas Stock Minimo):* Tablero rojo de farmacos criticos.
+    *   *SCR-14 (Auditoria Fisica):* Ajustes manuales del balance teorico vs fisico.
     *   *SCR-15 (Salida Mermas):* Registro de descarte por vencimiento.
-*   **Módulo Financiero (FAP - SCR-16 a SCR-23):**
-    *   *SCR-16 (Apertura Caja):* Inicio de sesión diaria y fondos.
+*   **Modulo Financiero (FAP - SCR-16 a SCR-23):**
+    *   *SCR-16 (Apertura Caja):* Inicio de sesion diaria y fondos.
     *   *SCR-17 (Arqueo Ciego):* Cierre ciego obligatorio exigiendo comentarios ante discrepancias.
-    *   *SCR-18 (Punto de Venta POS):* Terminal de cobros multimétodo y cálculo del 19% de IVA.
+    *   *SCR-18 (Punto de Venta POS):* Terminal de cobros multimetodo y calculo del 19% de IVA.
     *   *SCR-19 (Historial Facturas):* Lista administrativa de boletas y documentos emitidos.
-    *   *SCR-20 (Notas Crédito):* Formulario de anulación autorizado por supervisor.
-    *   *SCR-21 (Convenios Seguros):* Asociación de seguros veterinarios a pacientes.
-    *   *SCR-22 (Campañas Descuento):* Promociones limitadas por debajo del 50%.
-    *   *SCR-23 (Bitácora Financiera):* Historial consolidado de movimientos de caja.
-*   **Módulo Guardería (GAP - SCR-24 a SCR-30):**
+    *   *SCR-20 (Notas Credito):* Formulario de anulacion autorizado por supervisor.
+    *   *SCR-21 (Convenios Seguros):* Asociacion de seguros veterinarios a pacientes.
+    *   *SCR-22 (Campanas Descuento):* Promociones limitadas por debajo del 50%.
+    *   *SCR-23 (Bitacora Financiera):* Historial consolidado de movimientos de caja.
+*   **Modulo Guarderia (GAP - SCR-24 a SCR-30):**
     *   *SCR-24 (Mapa Caniles):* Aforo en tiempo real de las salas del hotel canino.
-    *   *SCR-25 (Check-in Guardería):* Admisión con control de vacunas y temperatura.
+    *   *SCR-25 (Check-in Guarderia):* Admision con control de vacunas y temperatura.
     *   *SCR-26 (Checklist Equipaje):* Custodia de pertenencias al ingreso de la mascota.
-    *   *SCR-27 (Dietas Especiales):* Racionamiento e indicación de alergias del huésped.
-    *   *SCR-28 (Bitácora Actividades):* Línea de tiempo diaria de paseos, comida y medicación.
-    *   *SCR-29 (Agenda Estética):* Turnos de estilismo con tarifas por tipo de mascota.
-    *   *SCR-30 (Gestión Cuidadores):* Asignación de personal respetando la proporción de 1 cuidador por cada 8 animales.
+    *   *SCR-27 (Dietas Especiales):* Racionamiento e indicacion de alergias del huesped.
+    *   *SCR-28 (Bitacora Actividades):* Linea de tiempo diaria de paseos, comida y medicacion.
+    *   *SCR-29 (Agenda Estetica):* Turnos de estilismo con tarifas por tipo de mascota.
+    *   *SCR-30 (Gestion Cuidadores):* Asignacion de personal respetando la proporcion de 1 cuidador por cada 8 animales.
 
 ---
 
-## ⚙️ 9. CI/CD y AWS Academy Student Lab Environment
+## 9. CI/CD y AWS Academy Student Lab Environment
 
-La plataforma está parametrizada para automatizar el ciclo de integración y despliegue continuo (CI/CD) adaptándose al AWS Academy Student Lab:
+La plataforma esta parametrizada para automatizar el ciclo de integracion y despliegue continuo (CI/CD) adaptandose al AWS Academy Student Lab:
 
-1.  **Restricciones de AWS LabRole:** Las credenciales de IAM temporales de Vocareum se almacenan en `aws_credentials.txt` (localmente) e inyectan dinámicamente en el workflow `.github/workflows/deploy.yml` para posibilitar el transporte seguro SSH.
-2.  **Sincronización SSH:** El script orquestador `pipeline_ci_cd.sh` valida la compilación estática de TypeScript, ejecuta la suite de pruebas unitarias y realiza `rsync` hacia la IP pública de Staging `54.210.14.88`, desencadenando un reinicio remoto en caliente mediante `pm2 reload AppServerL5`.
-3.  **Seguridad y Privacidad:** El archivo `.gitignore` blindado bloquea la subida de llaves `.pem` y reportes, protegiendo las credenciales de la clínica en todo momento.
+1.  **Restricciones de AWS LabRole:** Las credenciales de IAM temporales de Vocareum se almacenan de forma segura como GitHub Actions Secrets e inyectan dinamicamente en el workflow `.github/workflows/deploy.yml`. La IP publica del servidor se detecta en tiempo de ejecucion via `aws ec2 describe-instances`, eliminando dependencias a IPs hardcodeadas que cambian en cada reinicio del laboratorio.
+2.  **Sincronizacion SSH:** El workflow `deploy.yml` genera una llave SSH temporal via EC2 Instance Connect (TTL de 60 segundos), sincroniza el codigo con `rsync` hacia el servidor Ubuntu de Staging y ejecuta el reinicio del proceso con `pm2 restart AppServerL5`.
+3.  **Seguridad y Privacidad:** El archivo `.gitignore` blindado bloquea la subida de llaves `.pem` y credenciales, protegiendo los accesos en todo momento.
