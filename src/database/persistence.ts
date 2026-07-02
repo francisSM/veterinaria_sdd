@@ -193,6 +193,14 @@ const runDeltaMigrations = async (pool: Pool) => {
 // Save a single record to its PostgreSQL table using UPSERT
 const upsertRecord = async (pool: Pool, tableName: string, record: any) => {
   const snakeRecord = toSnake(record);
+  if (tableName === 'cirugias') {
+    delete snakeRecord.fecha_hora_cirugia;
+  }
+  if (tableName === 'citas') {
+    delete snakeRecord.paciente_nombre;
+    delete snakeRecord.propietario_nombre;
+    delete snakeRecord.veterinario_nombre;
+  }
   const keys = Object.keys(snakeRecord);
   const values = Object.values(snakeRecord);
   
