@@ -1,18 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  /* White & Pastel Color Palette Theme Overrides for Tailwind CSS v4 */
+  /* Mapping slate colors to light-mode background and border colors */
   --color-slate-950: #ffffff;
   --color-slate-900: #f8fafc;
-  --color-slate-800: #e2e8f0;
-  --color-slate-700: #cbd5e1;
-  --color-slate-600: #94a3b8;
-  --color-slate-500: #64748b;
-  --color-slate-400: #475569;
-  --color-slate-300: #334155;
-  --color-slate-200: #1e293b;
-  --color-slate-100: #0f172a;
-  
+  --color-slate-800: #cbd5e1;
+  --color-slate-700: #e2e8f0;
+
   /* Alert / Special backgrounds */
   --color-red-950: #ffe4e6; /* rose-100 */
   --color-amber-950: #fef3c7; /* amber-100 */
@@ -36,6 +30,95 @@
 }
 
 body {
-  background-color: #f8fafc;
+  background-color: #f1f5f9;
   color: #1e293b;
+}
+
+/* 
+ * PREMIUM PASTEL AND HIGH CONTRAST WEB INTERFACE DESIGN
+ * Enforces crisp text readability and clearly visible borders
+ */
+
+/* Force all form elements and inputs to look sharp, contrasty and beautiful */
+input, select, textarea {
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important; /* Clearly visible border line */
+  background-color: #ffffff !important;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #4f46e5 !important;
+  outline: 2px solid transparent !important;
+  background-color: #ffffff !important;
+}
+
+/* Input labels */
+label {
+  color: #334155 !important;
+  font-weight: 600 !important;
+}
+
+/* Placeholders contrast */
+input::placeholder, textarea::placeholder {
+  color: #64748b !important;
+  opacity: 1 !important;
+}
+
+/* Base Headings */
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+/* Secondary texts / descriptions */
+.text-slate-400, .text-slate-500, .text-slate-600 {
+  color: #475569 !important;
+}
+
+/* White Base Cards override */
+.bg-white, .bg-slate-950 {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* Gray background containers */
+.bg-slate-50, .bg-slate-900 {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* Active navigation link/tab style in sidebar (Soft indigo background, deep indigo text) */
+aside nav button.bg-indigo-50, 
+button[class*="bg-indigo-50"] {
+  background-color: #e0e7ff !important;
+  color: #4338ca !important;
+  border-color: #c7d2fe !important;
+  font-weight: 600 !important;
+}
+
+/* Default / Non-active sidebar links */
+aside nav button {
+  color: #475569 !important;
+  font-weight: 500 !important;
+}
+
+aside nav button:hover {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+/* Correct the acting role badge */
+span[class*="bg-indigo-50"],
+span.bg-indigo-50 {
+  background-color: #e0e7ff !important;
+  color: #4338ca !important;
+  border: 1px solid #c7d2fe !important;
+}
+
+/* Force all text-slate classes to have dark, high-contrast colors for visibility */
+.text-slate-50, .text-slate-100, .text-slate-200, .text-slate-300, .text-slate-400 {
+  color: #334155 !important;
+}
+.text-slate-500, .text-slate-600, .text-slate-700, .text-slate-800, .text-slate-900, .text-slate-950 {
+  color: #0f172a !important;
 }

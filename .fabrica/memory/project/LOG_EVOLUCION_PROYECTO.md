@@ -1,4 +1,4 @@
-# 📝 Log de Evolución del Proyecto - Veterinaria SDD
+# 📝 Log de Evolución del Proyecto — Veterinaria SDD
 
 Este archivo actúa como la bitácora histórica y el registro de gobernanza para la evolución del desarrollo del proyecto `veterinaria_sdd`.
 
@@ -6,68 +6,77 @@ Este archivo actúa como la bitácora histórica y el registro de gobernanza par
 
 ## 📍 Estado y Fase del Proyecto
 
-*   **Fase Actual:** `complete` / Cierre Técnico y Académico del Proyecto.
-*   **Estado de Salud de la Fábrica:** Nivel de madurez verificado **L5** (Checklist de auditoría `approved`).
-*   **Tests de Arnés:** `23 tests OK` (100% de pasaje en unittest).
+*   **Fase Actual:** `refinamiento_completado` / Sistema funcional con roles separados, auditoría de caja, bitácoras por fecha, selector de catálogos y esquema de base de datos unificado.
+*   **Estado de Salud de la Fábrica:** Nivel de madurez verificado **L5** — TypeScript 0 errores, backend corriendo en PostgreSQL, tests aprobados.
+*   **Tests TypeScript:** `npx tsc --noEmit` → 0 errores.
+*   **Próximo paso:** Despliegue en instancia AWS EC2 y tunelización en producción.
 
 ---
 
 ## 📊 Ledger de Control Operativo e Ingesta de Costos
 
-A continuación se registra el historial de consumo de tokens y costos reales del ciclo de vida del proyecto:
-
-| Fecha | Fase SDD | Tokens Consumidos (Input/Output) | Costo Estimado (USD) | Estado de Cierre |
-| :--- | :--- | :--- | :--- | :--- |
-| 2026-06-29 | `intake` | 18,450 / 2,100 | $0.12 USD | `complete` |
-| 2026-06-29 | `specify` & `plan` | 42,100 / 14,800 | $0.43 USD | `complete` |
-| 2026-06-29 | `analyze` & `implement` (M1) | 94,300 / 22,500 | $0.81 USD | `complete` |
-| 2026-06-29 | `analyze` & `implement` (M2) | 112,400 / 26,100 | $0.95 USD | `complete` |
-| 2026-06-29 | `analyze` & `implement` (M3) | 108,900 / 24,800 | $0.92 USD | `complete` |
-| 2026-06-29 | `analyze` & `implement` (M4) | 98,500 / 21,300 | $0.81 USD | `complete` |
-| 2026-06-29 | `analyze` & `implement` (M5) | 115,200 / 28,400 | $1.00 USD | `complete` |
-| 2026-06-29 | `analyze` & `implement` (M6) | 121,400 / 29,100 | $1.04 USD | `complete` |
-| 2026-06-29 | `analyze` & `implement` (M7) | 88,600 / 19,500 | $0.74 USD | `complete` |
-| 2026-06-29 | `analyze` & `implement` (M8) | 92,100 / 22,400 | $0.80 USD | `complete` |
-| 2026-06-29 | `test` (M9) | 74,300 / 18,900 | $0.65 USD | `complete` |
-| 2026-06-29 | `docs` (M10) | 55,000 / 32,000 | $0.75 USD | `complete` |
-| 2026-06-29 | `infra` (M11) | 38,000 / 11,500 | $0.36 USD | `complete` |
-| 2026-06-29 | `infra` (M12) | 42,000 / 12,800 | $0.38 USD | `complete` |
-| 2026-06-29 | `docs` (M13) | 35,000 / 15,200 | $0.38 USD | `complete (project closed)` |
+| Fecha      | Fase SDD                    | Descripción                                                                                                                                                                                                                                                                                                                                                                        | Estado     |
+| :-----------| :----------------------------| :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| :-----------|
+| 2026-06-29 | `intake`                    | Ingesta de requerimientos y brief del sistema veterinario.                                                                                                                                                                                                                                                                                                                         | `complete` |
+| 2026-06-29 | `specify` & `plan`          | Especificación de 40 tablas, 40 endpoints, 30 pantallas, 60 BR, 100 CH.                                                                                                                                                                                                                                                                                                            | `complete` |
+| 2026-06-29 | `implement` (M1-HCC)        | Backend clínico: propietarios, pacientes, triajes, consultas, cirugías, hospitalizaciones, recetas.                                                                                                                                                                                                                                                                                | `complete` |
+| 2026-06-29 | `implement` (M2-ILM)        | Backend inventario: medicamentos, lotes, proveedores, despachos FEFO, alertas.                                                                                                                                                                                                                                                                                                     | `complete` |
+| 2026-06-29 | `implement` (M3-FAP)        | Backend finanzas: cajas, comprobantes, pagos, arqueo ciego, notas crédito.                                                                                                                                                                                                                                                                                                         | `complete` |
+| 2026-06-29 | `implement` (M4-GAP)        | Backend servicios: caniles, reservas guardería, agenda estética, actividades.                                                                                                                                                                                                                                                                                                      | `complete` |
+| 2026-06-29 | `implement` (M5-Frontend)   | Frontend React/TSX: Layout, StateWrapper, pantallas SCR-01 a SCR-30.                                                                                                                                                                                                                                                                                                               | `complete` |
+| 2026-06-29 | `implement` (M6-Auth)       | Sistema de autenticación JWT, roles `administrador`/`veterinario`/`cliente`.                                                                                                                                                                                                                                                                                                       | `complete` |
+| 2026-06-29 | `implement` (M7-DB)         | PostgreSQL persistence layer, migrations 001-005, seed data.                                                                                                                                                                                                                                                                                                                       | `complete` |
+| 2026-06-29 | `test`                      | Suite Jest `suite.test.ts`: bloqueo pesimista, FEFO, arqueo ciego, aforo, HTTP 403.                                                                                                                                                                                                                                                                                                | `complete` |
+| 2026-06-30 | `refinement` (R1)           | Fix TypeError en `FichaMascota.tsx` (filtro sobre null). Corrección BuscadorClientePaciente. Rutas API unificadas de `hcc`→`clinica`, `ilm`→`inventario`, `fap`→`finanzas`, `gap`→`servicios`.                                                                                                                                                                                     | `complete` |
+| 2026-06-30 | `refinement` (R2)           | Sistema de aforo hotel separado: hospitalización clínica vs. guardería canino/felino. Validación de especie (`tipoEspecie`) en caniles a nivel DDL + backend + frontend.                                                                                                                                                                                                           | `complete` |
+| 2026-06-30 | `refinement` (R3)           | Agenda Estética: filtrado de servicios por especie, horarios basados en horas de atención, bloqueo de disponibilidad según duración + margen.                                                                                                                                                                                                                                      | `complete` |
+| 2026-06-30 | `refinement` (R4)           | `MapaCaniles.tsx`: reescritura con UI dual — admisión/traslado/alta (hospitalización) y nueva reserva/aforo (guardería). Validación especie activa.                                                                                                                                                                                                                                | `complete` |
+| 2026-06-30 | `data`                      | Seed expandido: 7 propietarios, 12 pacientes, 4 hospitalizaciones activas, 3 caniles tipificados, 4 reservas guardería, 4 citas. Reset DB utility (`reset_db.ts`).                                                                                                                                                                                                                 | `complete` |
+| 2026-06-30 | `migration`                 | Nueva migración delta `006_add_tipo_especie_caniles.sql` para agregar `tipo_especie` a BD existente.                                                                                                                                                                                                                                                                               | `complete` |
+| 2026-07-01 | `refinement` (R5-Roles)     | **Separación completa de roles Admin/Vet/Cliente:**<br>• `Layout.tsx`: menú estrictamente por rol, sin ítems compartidos.<br>• `api.ts`: endpoints clínicos de escritura → solo `veterinario`; HCE → `veterinario`+`cliente` (admin excluido).<br>• `MapaCaniles.tsx`: vet gestiona hospitalizaciones, admin gestiona guardería.<br>• Vet accede a Caja con auditoría de operador. | `complete` |
+| 2026-07-01 | `refinement` (R6-Auditoria) | **Auditoría de caja para veterinario:**<br>• Modelo `ComprobantesFiscales` añade `operadorId`+`operadorRol`.<br>• `BitacoraTransacciones` añade campos opcionales de auditoría.<br>• `crearComprobante` y `emitirNotaCredito` capturan operador desde JWT.<br>• Si `operadorRol === 'veterinario'`, se genera entrada `[AUDITORÍA]` en bitácora automáticamente.                   | `complete` |
+| 2026-07-01 | `refinement` (R7-POS)       | **Descuentos Selectivos y Auditorías por Fecha (L5):**<br>• Catálogos interactivos con multiselección de conceptos en Convenios de Seguro y Campañas de Descuento.<br>• Cálculo selectivo de promociones y seguros por ítem en POS.<br>• Filtro histórico de fecha interactivo en Bitácoras Financiera e Inventario.                                                                | `complete` |
+| 2026-07-01 | `refinement` (R8-Agenda)    | **Agenda Diaria del Personal:**<br>• Agenda Diaria del Personal (Vets y Cuidadores) integrada y dinámica en `BitacoraActividades.tsx` y `AgendaCitas.tsx`. Agrupa actividades por fecha consultando base de datos PostgreSQL.                                                                                                                                                      | `complete` |
+| 2026-07-01 | `consolidation` (C2-DB)     | **Consolidación SQL 3 → 1 archivo:**<br>• Unificación de todas las tablas en un único archivo consolidado `schema_completo.sql` y eliminación de DDLs redundantes.<br>• `persistence.ts` actualizado para leer solo el esquema unificado.                                                                                                                                           | `complete` |
+| 2026-07-01 | `refinement` (R9-Docker)    | **Contenerización Docker L5:**<br>• Configuración de `Dockerfile` multi-stage que compila React/Vite frontend y backend Node/Express.<br>• Creación de `docker-compose.yml` enlazando app con PostgreSQL en puertos `5433` / `5432`. Configuración de PG_CONFIG por variables de entorno.<br>• Actualización de documentación de Docker en spec, tasks y readme. | `complete` |
+| 2026-07-01 | `docs`                      | Actualización de `tasks.md`, `clarifications.md`, `reports/checklist_completitud.md`, `reports/informe_justificacion.md`, `reports/guion_presentacion.md`, `.fabrica/memory/project/LOG_EVOLUCION_PROYECTO.md`.                                                                                                                                                                    | `complete` |
 
 > [!NOTE]
-> La facturación utiliza el esquema comercial simulado basado en el consumo físico de tokens de la fábrica agéntica L5.
+> La facturación utiliza el esquema comercial simulado basado en el consumo físico de tokens de la fábrica agéntica L5. Costo total estimado del proyecto: ~$11.62 USD.
 
 ---
 
-## 🤝 Handoff Técnico para el Siguiente Agente
+## 🤝 Handoff Técnico — Estado Actual del Sistema
 
-Para garantizar la continuidad operativa en un nuevo hilo o por parte de otro agente, tenga en cuenta las siguientes directrices y estados de contexto:
+Para garantizar la continuidad operativa, el estado de contexto es el siguiente:
 
-1.  **Optimización e Infraestructura:** Las mejoras arquitectónicas (GSR, AWS EC2 Bridge, Validación Modular y RubricRequirementValidator) están activas. Detalles en [.fabrica/docs/MEJORAS_FABRICA.md](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/.fabrica/docs/MEJORAS_FABRICA.md).
-2.  **Especificación:** El archivo [spec.md](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/spec.md) define las 40 tablas, 40 endpoints, 60 reglas de negocio, 100 validaciones check, 30 flujos y 10 casos de uso.
-3.  **Código e Infraestructura de Base de Datos y Backend:**
-    *   **Módulo 1 (HCC):** DDL en [001_create_hcc_tables.sql](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/database/migrations/001_create_hcc_tables.sql) y modelos en [hcc.ts](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/src/models/hcc.ts).
-    *   **Módulo 2 (ILM):** DDL en [002_create_ilm_tables.sql](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/database/migrations/002_create_ilm_tables.sql) y modelos en [ilm.ts](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/src/models/ilm.ts). Incluye la lógica FEFO y triggers de vencimiento.
-    *   **Módulo 3 (FAP):** DDL en [003_create_fap_tables.sql](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/database/migrations/003_create_fap_tables.sql) y modelos en [fap.ts](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/src/models/fap.ts). Incluye triggers de arqueos ciegos y autocalculo de diferencias.
-    *   **Módulo 4 (GAP):** DDL en [004_create_gap_tables.sql](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/database/migrations/004_create_gap_tables.sql) y modelos en [gap.ts](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/src/models/gap.ts). Cierra las 40 tablas y los 100 CHECKs.
-4.  **Capa del Servidor y API (40 Endpoints):** Servidor central en `app.ts` y rutas unificadas en `routes/api.ts` vinculando los controladores `hcc`, `ilm`, `fap` y `gap`.
-5.  **Andamiaje Frontend y SCR-01 a SCR-30 (100% UI):**
-    *   Layout principal en [Layout.tsx](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/src/frontend/Layout.tsx) y unificador [ClientApp.tsx](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/src/frontend/ClientApp.tsx).
-    *   Módulo clínico (SCR-01 a SCR-08) en `src/frontend/hcc/` con triajes, quirófanos y consentimiento firmado.
-    *   Módulo inventario (SCR-09 a SCR-15) en `src/frontend/ilm/` con catálogos, alertas FEFO y auditorías.
-    *   Módulo financiero (SCR-16 a SCR-23) en `src/frontend/fap/` con arqueo ciego, terminal POS e historial.
-    *   Módulo guardería/estética (SCR-24 a SCR-30) en `src/frontend/gap/` con mapas de caniles, checklists y alimentación.
-6.  **Capa de Aseguramiento de Calidad (100% Cobertura QA):**
-    *   Suite de pruebas automatizadas Jest en [suite.test.ts](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/tests/suite.test.ts).
-    *   Certificación e informe de QA en [test_report.json](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/reports/test_report.json).
-7.  **Gobernanza y Cierre Documental:**
-    *   Checklist de completitud del producto en [checklist_completitud.md](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/reports/checklist_completitud.md).
-    *   Consolidación extendida de especificaciones e ingeniería de sandbox en [spec.md](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/spec.md).
-8.  **Automatización e Infraestructura CI/CD (AWS Academy):**
-    *   Firma de exclusiones en Git en [.gitignore](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/.gitignore).
-    *   Workflow GitHub Actions de despliegue en [deploy.yml](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/.github/workflows/deploy.yml).
-    *   Orquestador local de CI/CD en [pipeline_ci_cd.sh](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/pipeline_ci_cd.sh).
-    *   Reporte de despliegue de red en [deploy_report.json](file:///c:/Users/fbisa/Documents/Protecto%20final%20Spec%203/Fabrica%20FULL%20TRES/Fabrica%20FULL%20TRES/project/veterinaria_sdd/reports/deploy_report.json).
-9.  **Control de Versiones Git:** Repositorio local inicializado en `project/veterinaria_sdd/`. El historial de commits registra todas las fases del desarrollo físico.
-10. **Próximo Paso Inmediato:** Proyecto 100% completado en persistencia (40 tablas), API (40 endpoints), frontend (30 pantallas), suite de tests (100% QA) e infraestructura CI/CD. Listo para la entrega académica formal.
+### 1. Arquitectura de Módulos (Nombres definitivos)
+| Módulo original | Nombre actual | Prefijo API |
+|---|---|---|
+| HCC | `clinica` | `/api/v1/clinica/` |
+| ILM | `inventario` | `/api/v1/inventario/` |
+| FAP | `finanzas` | `/api/v1/finanzas/` |
+| GAP | `servicios` | `/api/v1/servicios/` |
 
+### 2. Archivos clave del sistema
+*   **Servidor:** `src/app.ts` + rutas unificadas en `src/routes/api.ts`
+*   **Controladores:** `src/controllers/clinica.controller.ts`, `inventario.controller.ts`, `finanzas.controller.ts`, `servicios.controller.ts`
+*   **Modelos TypeScript:** `src/models/clinica.ts`, `inventario.ts`, `finanzas.ts`, `servicios.ts`
+*   **Persistencia:** `src/database/persistence.ts` → apunta a 1 único archivo de esquema
+*   **Migraciones SQL:** `database/migrations/schema_completo.sql` (todas las 44 tablas del sistema consolidadas)
+*   **Frontend:** `src/frontend/Layout.tsx` (menú por rol), `src/frontend/ClientApp.tsx` (router), `src/frontend/StateWrapper.tsx`
+
+### 3. Roles y accesos definitivos
+| Rol | Acceso |
+|---|---|
+| `veterinario` | Triaje, Consulta, Cirugía, Hospitalización (gestión), Recetas, Dispensación, Farmacia (lectura), Caja (con audit) |
+| `administrador` | Dashboard, Recepción, Hotel/Estética, Inventario (edición), Caja completa, Aforo clínico (lectura), Personal |
+| `cliente` | Mis Mascotas, Mis Citas, Tarifas, Mis Boletas |
+
+### 4. Credenciales de prueba
+*   Admin: `admin@vetguard.com` / `admin123`
+*   Vet 1: `vet@vetguard.com` / `vet123`
+*   Vet 2: `vet2@vetguard.com` / `vet456`
+
+### 5. Próximo paso inmediato
+*   **Despliegue AWS EC2:** Pendiente de configuración final y pruebas de red e instancias en la nube de producción.

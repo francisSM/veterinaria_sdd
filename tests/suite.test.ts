@@ -153,12 +153,12 @@ describe('Veterinaria SDD - Suite de Pruebas de Integración y Reglas de Negocio
   // 5. VALIDACIÓN DE ENDPOINTS & ROLES
   describe('Middleware de Roles - authorizeRoles', () => {
     test('Debe denegar acceso (HTTP 403) si el rol no tiene los privilegios requeridos', () => {
-      const status = auth.authorizeRoles('cliente', ['veterinario', 'recepcionista']);
+      const status = auth.authorizeRoles('cliente', ['veterinario']);
       expect(status).toBe(403);
     });
 
     test('Debe permitir acceso (HTTP 200) si el rol está en la lista blanca de scopes', () => {
-      const status = auth.authorizeRoles('veterinario', ['veterinario', 'recepcionista']);
+      const status = auth.authorizeRoles('veterinario', ['veterinario']);
       expect(status).toBe(200);
     });
   });

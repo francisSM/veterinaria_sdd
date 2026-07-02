@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: veterinaria-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: veterinaria_sdd
+    ports:
+      - "5433:5432" # Expone 5433 hacia afuera para mantener compatibilidad local
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: veterinaria-app
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432 # Puerto interno del contenedor de Postgres
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: veterinaria_sdd
+      PORT: 3000
+    depends_on:
+      - db
+
+volumes:
+  pgdata:

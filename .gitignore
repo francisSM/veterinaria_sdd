@@ -5,6 +5,7 @@
 # Dependencias e Compilados
 node_modules/
 dist/
+dist-frontend/
 build/
 .env
 .env.production
@@ -27,6 +28,7 @@ checklist_completitud.md
 # Llaves y Credenciales
 *.pem
 aws_credentials.txt
+verify_deploy.ps1
 .env.production
 
 # Archivos de Video, Audio e Imágenes Crudas

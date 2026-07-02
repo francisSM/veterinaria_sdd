@@ -1,194 +1,155 @@
-import React from 'react';
-import {
-  LayoutDashboard,
-  Activity,
-  User,
-  Scissors,
-  Home,
-  Stethoscope,
-  FileText,
-  PenTool,
-  Database,
-  Inbox,
-  AlertTriangle,
-  CheckSquare,
-  RefreshCw,
-  Truck,
-  Search,
-  Key,
-  DollarSign,
-  ShoppingCart,
-  Receipt,
-  XCircle,
-  Shield,
-  Tag,
-  TrendingUp,
-  Grid,
-  PlusCircle,
-  Briefcase,
-  Utensils,
-  Calendar,
-  Sparkles,
-  UserCheck,
-  LogOut
-} from 'lucide-react';
+import React, { useState } from "react";
+import { LayoutDashboard, Activity, User, Scissors, Home, Stethoscope, FileText, PenTool, Database, Inbox, AlertTriangle, CheckSquare, RefreshCw, Truck, Search, Key, DollarSign, ShoppingCart, Receipt, XCircle, Shield, Tag, TrendingUp, Grid, PlusCircle, Briefcase, Utensils, Calendar, Sparkles, UserCheck, LogOut, CalendarCheck, Clock, ChevronDown, ChevronRight } from "lucide-react";
 
-export type UserRole = 'administrador' | 'veterinario' | 'cirujano' | 'farmaceutico' | 'cajero' | 'recepcionista' | 'cliente';
+export type UserRole = "administrador" | "veterinario" | "cliente";
 
-interface LayoutProps {
-  children: React.ReactNode;
-  activeTab: string;
-  setActiveTab: (tab: string) => void;
-  currentRole: UserRole;
-  setCurrentRole: (role: UserRole) => void;
-  onLogout: () => void;
-}
+interface MenuItem { id: string; label: string; roleRequired: UserRole[]; icon: React.ComponentType<any>; }
+interface MenuGroup { label: string; roles: UserRole[]; items: MenuItem[]; }
+interface LayoutProps { children: React.ReactNode; activeTab: string; setActiveTab: (tab: string) => void; currentRole: UserRole; setCurrentRole: (role: UserRole) => void; currentUser: { id: number; nombre: string; email: string; rol: UserRole } | null; onLogout: () => void; }
 
-export const Layout: React.FC<LayoutProps> = ({
-  children,
-  activeTab,
-  setActiveTab,
-  currentRole,
-  setCurrentRole,
-  onLogout
-}) => {
-  const roles: UserRole[] = ['administrador', 'veterinario', 'cirujano', 'farmaceutico', 'cajero', 'recepcionista', 'cliente'];
+export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, currentRole, currentUser, onLogout }) => {
+  const menuGroups: MenuGroup[] = [
+    // ─────────────────── CLIENTE ───────────────────
+    { label: 'Mi Espacio', roles: ['cliente'], items: [
+      { id: 'ficha',        label: 'Mis Mascotas',  roleRequired: ['cliente'], icon: User },
+      { id: 'agenda-citas', label: 'Mis Citas',     roleRequired: ['cliente'], icon: CalendarCheck },
+      { id: 'tarifas',      label: 'Tarifas',       roleRequired: ['cliente'], icon: DollarSign },
+      { id: 'mis-boletas',  label: 'Mis Boletas',   roleRequired: ['cliente'], icon: Receipt },
+    ]},
 
-  const menuItems = [
-    { id: 'dashboard', label: 'Dashboard Médico', roleRequired: ['administrador', 'veterinario', 'cirujano'], icon: LayoutDashboard },
-    { id: 'triaje', label: 'Triaje e Ingresos', roleRequired: ['administrador', 'recepcionista', 'veterinario'], icon: Activity },
-    { id: 'ficha', label: 'Ficha Paciente', roleRequired: ['administrador', 'veterinario', 'recepcionista', 'cliente'], icon: User },
-    { id: 'quirofano', label: 'Quirófano', roleRequired: ['administrador', 'cirujano'], icon: Scissors },
-    { id: 'hospitalizacion', label: 'Hospitalización', roleRequired: ['administrador', 'veterinario'], icon: Home },
-    { id: 'consulta', label: 'Consulta Externa', roleRequired: ['administrador', 'veterinario'], icon: Stethoscope },
-    { id: 'receta', label: 'Emisión Recetas', roleRequired: ['administrador', 'veterinario'], icon: FileText },
-    { id: 'consentimiento', label: 'Consentimientos', roleRequired: ['administrador', 'recepcionista', 'veterinario'], icon: PenTool },
-    { id: 'catalogo', label: 'Catálogo Fármacos', roleRequired: ['administrador', 'farmaceutico', 'veterinario'], icon: Database },
-    { id: 'ingreso-lotes', label: 'Recepción Lotes', roleRequired: ['administrador', 'farmaceutico'], icon: Inbox },
-    { id: 'alertas-stock', label: 'Alertas Stock / FEFO', roleRequired: ['administrador', 'farmaceutico'], icon: AlertTriangle },
-    { id: 'dispensacion', label: 'Dispensar Recetas', roleRequired: ['administrador', 'farmaceutico'], icon: CheckSquare },
-    { id: 'movimientos', label: 'Ajustes Manuales', roleRequired: ['administrador', 'farmaceutico'], icon: RefreshCw },
-    { id: 'proveedores', label: 'Proveedores', roleRequired: ['administrador', 'farmaceutico'], icon: Truck },
-    { id: 'auditoria', label: 'Auditoría Stock', roleRequired: ['administrador', 'farmaceutico'], icon: Search },
-    { id: 'apertura-cierre', label: 'Apertura/Cierre Caja', roleRequired: ['administrador', 'cajero'], icon: Key },
-    { id: 'arqueo-cieo', label: 'Arqueo Ciego', roleRequired: ['administrador', 'cajero'], icon: DollarSign },
-    { id: 'punto-venta', label: 'Punto de Venta (POS)', roleRequired: ['administrador', 'cajero'], icon: ShoppingCart },
-    { id: 'historial-comprobantes', label: 'Historial Facturas', roleRequired: ['administrador', 'cajero'], icon: Receipt },
-    { id: 'anulaciones', label: 'Notas de Crédito', roleRequired: ['administrador', 'cajero'], icon: XCircle },
-    { id: 'seguros', label: 'Convenios Seguros', roleRequired: ['administrador', 'cajero'], icon: Shield },
-    { id: 'descuentos', label: 'Campañas Descuentos', roleRequired: ['administrador', 'cajero'], icon: Tag },
-    { id: 'bitacora-financiera', label: 'Bitácora Caja', roleRequired: ['administrador'], icon: TrendingUp },
-    { id: 'mapa-caniles', label: 'Aforo Hotel', roleRequired: ['administrador', 'recepcionista', 'veterinario'], icon: Grid },
-    { id: 'admision-guarderia', label: 'Admisión Guardería', roleRequired: ['administrador', 'recepcionista'], icon: PlusCircle },
-    { id: ' checklist-pertenencias', label: 'Custodia Equipaje', roleRequired: ['administrador', 'recepcionista'], icon: Briefcase },
-    { id: 'dietas', label: 'Dietas Especiales', roleRequired: ['administrador', 'recepcionista', 'veterinario'], icon: Utensils },
-    { id: 'bitacora-actividades', label: 'Agenda Diaria', roleRequired: ['administrador', 'recepcionista', 'veterinario'], icon: Calendar },
-    { id: 'agenda-estetica', label: 'Agenda Estética', roleRequired: ['administrador', 'recepcionista'], icon: Sparkles },
-    { id: 'gestion-cuidadores', label: 'Personal Hotel', roleRequired: ['administrador'], icon: UserCheck },
+    // ─────────────────── VETERINARIO ───────────────
+    { label: 'Pacientes', roles: ['veterinario'], items: [
+      { id: 'ficha',        label: 'Ficha Paciente',    roleRequired: ['veterinario'], icon: User },
+      { id: 'triaje',       label: 'Triaje e Ingresos', roleRequired: ['veterinario'], icon: Activity },
+      { id: 'consulta',     label: 'Consulta Externa',  roleRequired: ['veterinario'], icon: Stethoscope },
+      { id: 'agenda-citas', label: 'Agenda de Citas',   roleRequired: ['veterinario'], icon: CalendarCheck },
+    ]},
+    { label: 'Mi Agenda', roles: ['veterinario'], items: [
+      { id: 'mi-horario', label: 'Mi Horario Semanal', roleRequired: ['veterinario'], icon: Clock },
+    ]},
+    { label: 'Clínica', roles: ['veterinario'], items: [
+      { id: 'quirofano',       label: 'Quirófano',         roleRequired: ['veterinario'], icon: Scissors },
+      { id: 'hospitalizacion', label: 'Hospitalización',   roleRequired: ['veterinario'], icon: Home },
+      { id: 'receta',          label: 'Emisión Recetas',   roleRequired: ['veterinario'], icon: FileText },
+      { id: 'consentimiento',  label: 'Consentimientos',   roleRequired: ['veterinario'], icon: PenTool },
+    ]},
+    { label: 'Farmacia', roles: ['veterinario'], items: [
+      { id: 'catalogo',      label: 'Catálogo Fármacos',  roleRequired: ['veterinario'], icon: Database },
+      { id: 'dispensacion',  label: 'Dispensar Recetas',  roleRequired: ['veterinario'], icon: CheckSquare },
+      { id: 'alertas-stock', label: 'Alertas Stock/FEFO', roleRequired: ['veterinario'], icon: AlertTriangle },
+    ]},
+    { label: 'Caja', roles: ['veterinario'], items: [
+      { id: 'punto-venta',            label: 'Punto de Venta',    roleRequired: ['veterinario'], icon: ShoppingCart },
+      { id: 'historial-comprobantes', label: 'Historial Facturas', roleRequired: ['veterinario'], icon: Receipt },
+      { id: 'tarifas',                label: 'Tarifas Servicios', roleRequired: ['veterinario'], icon: DollarSign }
+    ]},
+
+    // ─────────────────── ADMINISTRADOR ─────────────
+    { label: 'Inicio', roles: ['administrador'], items: [
+      { id: 'dashboard', label: 'Dashboard', roleRequired: ['administrador'], icon: LayoutDashboard },
+    ]},
+    { label: 'Recepción', roles: ['administrador'], items: [
+      { id: 'agenda-citas', label: 'Agenda de Citas',      roleRequired: ['administrador'], icon: CalendarCheck },
+      { id: 'ficha',        label: 'Registro de Clientes', roleRequired: ['administrador'], icon: User },
+    ]},
+    { label: 'Hotel y Estética', roles: ['administrador'], items: [
+      { id: 'mapa-caniles',       label: 'Aforo Hotel',        roleRequired: ['administrador'], icon: Grid },
+      { id: 'admision-guarderia', label: 'Admisión Guardería', roleRequired: ['administrador'], icon: PlusCircle },
+      { id: 'agenda-estetica',    label: 'Agenda Estética',    roleRequired: ['administrador'], icon: Sparkles },
+    ]},
+    { label: 'Inventario / Farmacia', roles: ['administrador'], items: [
+      { id: 'catalogo',      label: 'Catálogo Fármacos',  roleRequired: ['administrador'], icon: Database },
+      { id: 'alertas-stock', label: 'Alertas Stock/FEFO', roleRequired: ['administrador'], icon: AlertTriangle },
+      { id: 'ingreso-lotes', label: 'Recepción Lotes',    roleRequired: ['administrador'], icon: Inbox },
+      { id: 'movimientos',   label: 'Ajustes Manuales',   roleRequired: ['administrador'], icon: RefreshCw },
+      { id: 'auditoria',     label: 'Auditoría Stock',    roleRequired: ['administrador'], icon: Search },
+      { id: 'bitacora-inventario', label: 'Bitácora Movimientos', roleRequired: ['administrador'], icon: FileText },
+      { id: 'proveedores',   label: 'Proveedores',        roleRequired: ['administrador'], icon: Truck },
+    ]},
+    { label: 'Caja / Finanzas', roles: ['administrador'], items: [
+      { id: 'punto-venta',            label: 'Punto de Venta',    roleRequired: ['administrador'], icon: ShoppingCart },
+      { id: 'historial-comprobantes', label: 'Historial Facturas', roleRequired: ['administrador'], icon: Receipt },
+      { id: 'apertura-cierre',        label: 'Apertura/Cierre Caja', roleRequired: ['administrador'], icon: Key },
+      { id: 'arqueo-cieo',            label: 'Arqueo Ciego',         roleRequired: ['administrador'], icon: DollarSign },
+      { id: 'anulaciones',            label: 'Notas de Crédito',     roleRequired: ['administrador'], icon: XCircle },
+      { id: 'bitacora-financiera',    label: 'Bitácora Caja',        roleRequired: ['administrador'], icon: TrendingUp },
+      { id: 'seguros',                label: 'Convenios Seguros',    roleRequired: ['administrador'], icon: Shield },
+      { id: 'descuentos',             label: 'Campañas Descuentos',  roleRequired: ['administrador'], icon: Tag },
+      { id: 'tarifas',                label: 'Tarifas Servicios',    roleRequired: ['administrador'], icon: DollarSign },
+    ]},
+    { label: 'Hospitalización', roles: ['administrador'], items: [
+      { id: 'hospitalizacion', label: 'Aforo Clínico', roleRequired: ['administrador'], icon: Activity },
+    ]},
+    { label: 'Personal', roles: ['administrador'], items: [
+      { id: 'gestion-veterinarios', label: 'Gestión Veterinarios', roleRequired: ['administrador'], icon: UserCheck },
+      { id: 'gestion-cuidadores',   label: 'Personal Hotel',       roleRequired: ['administrador'], icon: Briefcase },
+      { id: 'dietas',               label: 'Dietas Especiales',    roleRequired: ['administrador'], icon: Utensils },
+      { id: 'bitacora-actividades', label: 'Agenda Diaria',        roleRequired: ['administrador'], icon: Calendar },
+    ]},
   ];
 
-  // Filtrar ítems del menú para mostrar SOLO los que tienen permiso
-  const allowedMenuItems = menuItems.filter(item => item.roleRequired.includes(currentRole));
+  const visibleGroups = menuGroups.filter(g => g.roles.includes(currentRole)).map(g => ({ ...g, items: g.items.filter(item => item.roleRequired.includes(currentRole)) })).filter(g => g.items.length > 0);
+  const [collapsed, setCollapsed] = useState<Record<string,boolean>>({});
+  const toggleGroup = (label: string) => setCollapsed(prev => ({ ...prev, [label]: !prev[label] }));
 
   return (
     <div className="min-h-screen flex bg-slate-50 text-slate-800 font-sans">
-      {/* Sidebar de Navegación Lateral (Fondo Blanco, Bordes Pasteles) */}
-      <aside className="w-64 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 h-screen sticky top-0 shadow-xs">
-        <div>
-          {/* Logo / Título */}
-          <div className="p-6 border-b border-slate-100 flex items-center gap-3">
-            <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-indigo-400 bg-clip-text text-transparent">
-              VetGuard L5
-            </span>
-          </div>
-
-          {/* Menú de Opciones */}
-          <nav className="p-4 space-y-1 overflow-y-auto max-h-[calc(100vh-140px)]">
-            {allowedMenuItems.map((item) => {
-              const IconComponent = item.icon;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveTab(item.id)}
-                  className={`w-full text-left px-3.5 py-2.5 rounded-xl text-sm transition-all duration-150 flex items-center gap-3 ${
-                    activeTab === item.id
-                      ? 'bg-indigo-50 text-indigo-600 border border-indigo-100/50 font-semibold shadow-xs'
-                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                  }`}
-                >
-                  <IconComponent className={`h-4.5 w-4.5 ${activeTab === item.id ? 'text-indigo-600' : 'text-slate-400'}`} />
-                  <span>{item.label}</span>
-                </button>
-              );
-            })}
-          </nav>
+      <aside className="w-60 bg-white border-r border-slate-200 flex flex-col shrink-0 h-screen sticky top-0 shadow-xs overflow-hidden">
+        <div className="p-5 border-b border-slate-100 flex items-center gap-2.5 flex-shrink-0">
+          <div className="h-7 w-7 rounded-lg bg-indigo-600 flex items-center justify-center"><Stethoscope className="h-3.5 w-3.5 text-white"/></div>
+          <span className="text-base font-bold bg-gradient-to-r from-indigo-600 to-indigo-400 bg-clip-text text-transparent">VetGuard L5</span>
         </div>
-
-        {/* Footer Sidebar */}
-        <div className="p-4 border-t border-slate-100 text-xs text-slate-400">
-          <p>Sandbox de Operaciones L5</p>
-          <p className="mt-0.5 text-slate-400/80">v0.1.0-alpha</p>
+        <nav className="flex-1 overflow-y-auto p-3 space-y-0.5">
+          {visibleGroups.map((group) => {
+            const isCollapsed = collapsed[group.label];
+            return (
+              <div key={group.label} className="mb-1">
+                <button onClick={() => toggleGroup(group.label)} className="w-full flex items-center justify-between px-2 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:text-slate-600 transition-colors cursor-pointer">
+                  <span>{group.label}</span>
+                  {isCollapsed ? <ChevronRight className="h-3 w-3"/> : <ChevronDown className="h-3 w-3"/>}
+                </button>
+                {!isCollapsed && (
+                  <div className="space-y-0.5">
+                    {group.items.map((item) => {
+                      const Icon = item.icon;
+                      const isActive = activeTab === item.id;
+                      return (
+                        <button key={item.id} onClick={() => setActiveTab(item.id)}
+                          className={`w-full text-left px-3 py-2 rounded-lg text-xs transition-all duration-100 flex items-center gap-2.5 cursor-pointer ${isActive ? "bg-indigo-50 text-indigo-600 border border-indigo-100/60 font-semibold" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}>
+                          <Icon className={`h-3.5 w-3.5 flex-shrink-0 ${isActive ? "text-indigo-500" : "text-slate-400"}`}/>
+                          <span className="truncate">{item.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </nav>
+        <div className="p-3 border-t border-slate-100 text-[10px] text-slate-400 flex-shrink-0">
+          <p>Consola Operativa VetGuard</p>
+          <p className="text-slate-400/70">v0.2.0 - Local</p>
         </div>
       </aside>
 
-      {/* Contenedor Principal */}
       <div className="flex-1 flex flex-col min-w-0 min-h-screen">
-        {/* Encabezado / Header */}
-        <header className="h-16 bg-white border-b border-slate-200/80 flex items-center justify-between px-8 z-10 sticky top-0 shadow-xs">
-          <div className="flex items-center gap-3">
-            <h2 className="text-sm font-semibold text-slate-600">Consola del Centro Veterinario</h2>
-          </div>
-
-          <div className="flex items-center gap-6">
-            {/* Selector de Roles Ficticios */}
-            <div className="flex items-center gap-2">
-              <label htmlFor="role-select" className="text-xs text-slate-400 font-medium">Actuar como:</label>
-              <select
-                id="role-select"
-                value={currentRole}
-                onChange={(e) => {
-                  const selectedRole = e.target.value as UserRole;
-                  setCurrentRole(selectedRole);
-                  // Si el rol actual no tiene permiso en la pestaña activa, mover a la primera permitida
-                  const item = menuItems.find(m => m.id === activeTab);
-                  if (item && !item.roleRequired.includes(selectedRole)) {
-                    const firstAllowed = menuItems.find(m => m.roleRequired.includes(selectedRole));
-                    if (firstAllowed) setActiveTab(firstAllowed.id);
-                  }
-                }}
-                className="bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded-lg px-2.5 py-1.5 focus:ring-1 focus:ring-indigo-500 focus:outline-none cursor-pointer"
-              >
-                {roles.map((role) => (
-                  <option key={role} value={role}>
-                    {role.toUpperCase()}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Usuario Activo */}
-            <div className="flex items-center gap-2 border-l border-slate-200 pl-4">
-              <div className="h-8 w-8 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center text-xs font-semibold text-indigo-600">
-                {currentRole[0].toUpperCase()}
+        <header className="h-14 bg-white border-b border-slate-200/80 flex items-center justify-between px-6 z-10 sticky top-0 shadow-xs">
+          <span className="text-xs font-semibold text-slate-500">Centro Veterinario</span>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2.5">
+              <div className="h-7 w-7 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center text-[11px] font-bold text-indigo-600">{(currentUser?.nombre || "U")[0].toUpperCase()}</div>
+              <div className="flex flex-col text-left">
+                <span className="text-xs font-bold text-slate-700 leading-tight">{currentUser?.nombre || "Usuario"}</span>
+                <span className="text-[10px] font-medium text-slate-400 capitalize leading-tight">{currentUser?.rol || currentRole}</span>
               </div>
-              <span className="text-xs font-medium text-slate-500 capitalize">{currentRole}</span>
             </div>
-
-            {/* Botón Salir */}
-            <button
-              onClick={onLogout}
-              className="flex items-center gap-1.5 text-xs font-medium text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100/70 border border-rose-100 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
-            >
-              <LogOut className="h-3.5 w-3.5" />
-              <span>Cerrar Sesión</span>
+            <button onClick={onLogout} className="flex items-center gap-1.5 text-[11px] font-medium text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100/70 border border-rose-100 px-3 py-1.5 rounded-lg transition-colors cursor-pointer">
+              <LogOut className="h-3.5 w-3.5"/><span>Salir</span>
             </button>
           </div>
         </header>
-
-        {/* Contenedor de Vista */}
-        <main className="flex-1 p-8 bg-slate-50/50">
-          {children}
-        </main>
+        <main className="flex-1 p-6 bg-slate-50/50">{children}</main>
       </div>
     </div>
   );
